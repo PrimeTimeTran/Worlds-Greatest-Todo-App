@@ -9,17 +9,16 @@
   background-color: #ECE5F0;
   background-position: center;
   background-repeat: no-repeat;
-  background-image: url('https://images5.alphacoders.com/324/324310.jpg');
 }
 
 .Navigation {
   width: 100vw;
   display: flex;
   min-height: 3rem;
-  padding-top: 1rem;
+  padding-top: 0.1rem;
   flex-direction: row;
   padding-right: 5rem;
-  padding-bottom: 1rem;
+  padding-bottom: 0.1rem;
   align-items: flex-end;
   align-content: center;
   justify-content: flex-end;
@@ -34,17 +33,16 @@
 }
 
 .Prompt-Title {
-  font-size: 6rem;
+  font-size: 3rem;
   color: white;
 }
 
-
 .TodoContainer {
   width: 95%;
-  height: 45vh;
+  height: 50rem;
   opacity: 0.85;
-  padding: 1rem;
   display: flex;
+  padding-top: 150px;
   overflow-y: scroll; 
   position: relative;
   border-radius: 1rem;
@@ -56,7 +54,7 @@
 
 .TodoItem {
   width: 95%;
-  height: 10vh;
+  height: 3.5rem;
   margin: 10px;
   display: flex;
   font-size: 2rem;
@@ -69,7 +67,7 @@
 }
 
 .TodoItemDone {
-  background-color: #12355Bcf;
+  background-color: rgba(10, 28, 46, 0.812);
   text-decoration: line-through;
 }
 
@@ -109,14 +107,16 @@ input, select, textarea {
 
 .SignInFormNavigation {
   width: 40rem;
-  height: 5rem;
+  height: 3rem;
   display: flex;
   align-items: center;
+  align-content: center;
   justify-content: space-around;
 }
 
 .NavigationInput {
-  height: 3rem;
+  height: 1.5rem;
+  border-radius: 5%;
   font-size: 20px;
 }
 
@@ -134,7 +134,7 @@ input, select, textarea {
 
 .Btn-Signout {
   width: 10rem;
-  height: 3rem;
+  height: 2rem;
   font-size: 1.5rem;
   align-self: center;
   border-width: 0rem;
@@ -142,8 +142,9 @@ input, select, textarea {
 }
 
 .Btn-Signin {
-  width: 10rem;
-  height: 3rem;
+  width: 5rem;
+  height: 1.5rem;
+  font-size: 1rem;
 }
 
 .Btn-Delete {
@@ -154,7 +155,7 @@ input, select, textarea {
 .InnerTodoContainer {
   width: 100%;
   display: flex; 
-  padding: 2rem;
+  padding: 1.5rem;
   flex-direction: row;
   align-items: 'center';  
   align-content: center;

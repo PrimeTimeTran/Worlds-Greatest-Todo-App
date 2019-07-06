@@ -3,12 +3,33 @@ import React, { useState, useEffect } from "react";
 import firebase from "firebase";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
-import "./App.css";
-
 import Footer from "./components/Footer";
-import TodoItem from "./components/TodoItem";
+import TodoList from "./components/TodoList";
+import TodoInput from "./components/TodoInput";
 import Navigation from "./components/Navigation";
 import FilterButton from "./components/FilterButton";
+
+import "./App.css";
+const IMAGES = [
+  'https://res.klook.com/images/fl_lossy.progressive,q_65/c_fill,w_1295,h_769,f_auto/w_80,x_15,y_15,g_south_west,l_klook_water/activities/jvlq5g5bokihkxwmxj2f/AoDaiShowTicketinHue.jpg',
+  'https://images5.alphacoders.com/324/324310.jpg',
+  'https://cdn.wallpapersafari.com/84/87/qUcZf8.jpg',
+  'https://cdn.wallpapersafari.com/86/35/yRkorx.jpg',
+  'https://cdn.wallpapersafari.com/14/39/3dmw0N.jpg',
+  'https://cdn.wallpapersafari.com/75/11/9p5exb.jpg',
+  'https://cdn.wallpapersafari.com/60/77/6DsTgo.jpg',
+  'https://cdn.wallpapersafari.com/20/42/TV57dP.jpg',
+  'https://cdn.wallpapersafari.com/60/36/3qsjr1.jpg',
+  'https://cdn.wallpapersafari.com/18/90/iNWHCZ.jpg',
+  'https://cdn.wallpapersafari.com/83/29/JZlAdc.jpg',
+  'https://cdn.wallpapersafari.com/18/30/SsH8Tf.jpg',
+  'https://cdn.wallpapersafari.com/17/92/QmSeLj.jpg',
+  'https://cdn.wallpapersafari.com/66/84/j91dOS.jpg',
+  'https://bestwallpapers.in/wp-content/uploads/2018/04/abstract-pattern-colorful-4k-wallpaper-3840x2160.jpg',
+  'https://cdn.cnn.com/cnnnext/dam/assets/171222140328-03-plastic-straws-stock-full-169.jpg'
+]
+
+const randomBackgroundImage = () => IMAGES[Math.floor(Math.random() * IMAGES.length)];
 
 const firebaseConfig = {
   storageBucket: "",
@@ -22,7 +43,7 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-function TodoList() {
+function App() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(true);
   const [password, setPassword] = useState("");
@@ -42,7 +63,9 @@ function TodoList() {
 
           const db = firebase.firestore();
           const todosRef = db.collection("todos");
-          const query = todosRef.where("uid", "==", user.uid);
+          const query = todosRef
+            .where("uid", "==", user.uid)
+            .orderBy("createdAt", "asc");
 
           const todos = [];
 
@@ -67,7 +90,7 @@ function TodoList() {
         setLoading(false);
       });
     };
-    setupApp()
+    setupApp();
   }, [newTodoBody]);
 
   const save = list => {
@@ -139,7 +162,8 @@ function TodoList() {
     const newTodo = {
       body: body,
       status: "active",
-      uid: currentUser.uid
+      uid: currentUser.uid,
+      createdAt: new Date()
     };
 
     const jsonTodo = JSON.parse(JSON.stringify(newTodo));
@@ -209,30 +233,14 @@ function TodoList() {
   };
 
   const renderPrompt = () => {
-    const isSignedIn = currentUser.email !== '' && currentUser.email !== undefined
-    if (isSignedIn  && todoList.length === 0) {
-      return <h1 className="Prompt">So many todos, so little time...</h1>
-    } else if (currentUser.email !== '' && todoList.length === 0) {
-      return <h1 className="Prompt">Signin to save your todos</h1>
+    const isSignedIn =
+      currentUser.email !== "" && currentUser.email !== undefined;
+    if (isSignedIn && todoList.length === 0) {
+      return <h1 className="Prompt">So many todos, so little time...</h1>;
+    } else if (currentUser.email !== "" && todoList.length === 0) {
+      return <h1 className="Prompt">Signin to save your todos</h1>;
     }
-  }
-
-  const renderTodos = () => {
-    return todoList.map((todo, idx) => {
-      return (
-        <TodoItem
-          idx={idx}
-          todo={todo}
-          id={todo.id}
-          key={todo.id}
-          onKeyDown={keyPress}
-          submitEditTodo={submitTodo}
-          onToggleTodo={onToggleTodo}
-          onDeleteTodo={onDeleteTodo}
-        />
-      );
-    })
-  }
+  };
 
   const onDeleteTodo = id => {
     const db = firebase.firestore();
@@ -256,8 +264,11 @@ function TodoList() {
     todo => todo.status === "active"
   ).length;
 
+  const rdmBgImage = {
+    backgroundImage: `url(${randomBackgroundImage()})`
+  }
   return (
-    <div className="App">
+    <div className="App" style={rdmBgImage}>
       <Navigation
         email={email}
         password={password}
@@ -267,18 +278,11 @@ function TodoList() {
         setPassword={setPassword}
         currentUser={currentUser}
       />
-      <h1 className="Prompt Prompt-Title">Todo List</h1>
-      <input
-        autoFocus
-        value={newTodoBody}
-        onKeyDown={keyPress}
-        className="NewTodoInput"
-        placeholder={`Enter todo here ${
-          currentUser.email !== undefined ? currentUser.email : ""
-        }`}
-        onChange={e => {
-          setNewTodoItem(e.target.value);
-        }}
+      <TodoInput
+        keyPress={keyPress}
+        newTodoBody={newTodoBody}
+        currentUser={currentUser}
+        setNewTodoItem={setNewTodoItem}
       />
       <div className="SortingButtons">
         <FilterButton
@@ -300,17 +304,23 @@ function TodoList() {
       <div className="TodoContainer">
         {loading && <div className="loader" />}
         {renderPrompt()}
-        {renderTodos()}
+        <TodoList
+          todoList={todoList}
+          onKeyDown={keyPress}
+          submitEditTodo={submitTodo}
+          onToggleTodo={onToggleTodo}
+          onDeleteTodo={onDeleteTodo}
+        />
       </div>
       <Footer />
     </div>
   );
 }
 
-const App = () => (
+const RoutedApp = () => (
   <Router>
-    <Route path="/" component={TodoList} />
+    <Route path="/" component={App} />
   </Router>
 );
 
-export default App;
+export default RoutedApp;
