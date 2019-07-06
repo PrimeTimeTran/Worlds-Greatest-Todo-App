@@ -8,7 +8,7 @@ var style = {
   padding: "20px",
   position: "fixed",
   textAlign: "center",
-  backgroundColor: "#012622",
+  backgroundColor: "#12355B",
   display: "flex",
   alignItems: "center",
   justifyContent: "center"

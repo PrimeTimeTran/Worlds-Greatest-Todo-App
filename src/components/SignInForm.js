@@ -2,7 +2,7 @@ import React from "react";
 
 const SignInForm = props => {
   return (
-    <div>
+    <div className="SignInFormNavigation">
       <input
         value={props.email}
         className="NavigationInput"
@@ -18,7 +18,7 @@ const SignInForm = props => {
           props.setPassword(e.target.value);
         }}
       />
-      <button onClick={props.onSignIn}>Signin</button>
+      <button className="Btn Btn-Signin" onClick={props.onSignIn}>Signin</button>
     </div>
   );
 };

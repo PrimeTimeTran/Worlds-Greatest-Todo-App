@@ -5,45 +5,57 @@
   text-align: center;
   align-items: center;
   flex-direction: column;
+  background-size: cover;
   background-color: #ECE5F0;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-image: url('https://images5.alphacoders.com/324/324310.jpg');
 }
 
 .Navigation {
   width: 100vw;
   display: flex;
   min-height: 3rem;
+  padding-top: 1rem;
   flex-direction: row;
   padding-right: 5rem;
   padding-bottom: 1rem;
   align-items: flex-end;
+  align-content: center;
   justify-content: flex-end;
-  background-color: #003B36;
+  background-color: #12355B;
 }
 
 .Prompt {
   color: white;
-  font-size: 5rem;
+  font-size: 3rem;
+  text-shadow: 3px 3px 5px #000;
   font-family: "Roboto", Times, serif;
 }
 
+.Prompt-Title {
+  font-size: 6rem;
+  color: white;
+}
+
+
 .TodoContainer {
-  width: 85rem;
-  height: 40vh;
-  opacity: 0.9;
+  width: 95%;
+  height: 45vh;
+  opacity: 0.85;
+  padding: 1rem;
   display: flex;
-  padding: 25px;
-  overflow-y:scroll; 
-  position:relative;
-  padding-top: 100px;
+  overflow-y: scroll; 
+  position: relative;
   border-radius: 1rem;
   align-items: center;
   flex-direction: column;
   justify-content: center;
-  background-color: white;
+  background-color: black;
 }
 
 .TodoItem {
-  width: 80rem;
+  width: 95%;
   height: 10vh;
   margin: 10px;
   display: flex;
@@ -51,21 +63,22 @@
   color: #FCFCFC;
   font-weight: bold;
   text-align: center;
+  border-radius: 1rem;
   align-items: center;
   justify-content: space-between;
 }
 
 .TodoItemDone {
-  background-color: #012622cf;
+  background-color: #12355Bcf;
   text-decoration: line-through;
 }
 
 .TodoItemActive {
-  background-color: #012622;
+  background-color: green;
 }
 
 .NewTodoInput {
-  width: 80vw;
+  width: 60rem;
   height: 55px;
   text-align: center;
 }
@@ -78,6 +91,7 @@
 input, select, textarea {
   font-size: 2rem;
   color: #160C28;
+  opacity: 0.9;
 }
 
 ::placeholder {
@@ -86,23 +100,55 @@ input, select, textarea {
 }
 
 .SortingButtons {
+  width: 60rem;
+  margin: 1rem;
   display: flex;
   flex-direction: row;
-  margin: 1rem;
+  justify-content: space-between;
+}
+
+.SignInFormNavigation {
+  width: 40rem;
+  height: 5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
 }
 
 .NavigationInput {
+  height: 3rem;
   font-size: 20px;
-
 }
 
 .Btn {
-  width: 200px;
+  width: 300px;
   height: 50px;
+  display: flex;
   color: white;
   font-size: 2rem;
   font-weight: bold;
-  background-color: #59114D;
+  align-items: center;
+  justify-content: center;
+  background-color: #AF3B6E;
+}
+
+.Btn-Signout {
+  width: 10rem;
+  height: 3rem;
+  font-size: 1.5rem;
+  align-self: center;
+  border-width: 0rem;
+  background-color: #160C28;
+}
+
+.Btn-Signin {
+  width: 10rem;
+  height: 3rem;
+}
+
+.Btn-Delete {
+  color: white;
+  margin-right: 2rem;
 }
 
 .InnerTodoContainer {
@@ -113,3 +159,22 @@ input, select, textarea {
   align-items: 'center';  
   align-content: center;
 }
+
+.loader {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 16px solid #f3f3f3;
+  border-top: 16px solid #12355B;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+a {
+  color: pink;
+}
+

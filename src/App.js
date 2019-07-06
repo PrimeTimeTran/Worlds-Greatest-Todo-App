@@ -1,27 +1,30 @@
 import React, { useState, useEffect } from "react";
+
 import firebase from "firebase";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
 import "./App.css";
 
-import TodoItem from "./components/TodoItem";
-import SignInForm from "./components/SignInForm";
 import Footer from "./components/Footer";
+import TodoItem from "./components/TodoItem";
+import Navigation from "./components/Navigation";
+import FilterButton from "./components/FilterButton";
 
 const firebaseConfig = {
   storageBucket: "",
-  projectId: process.env.REACT_APP_PROJECT_ID,
-  messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
-  authDomain: process.env.REACT_APP_AUTH_DOMAIN,
   appId: process.env.REACT_APP_APP_ID,
   apiKey: process.env.REACT_APP_API_KEY,
-  databaseURL: process.env.REACT_APP_DATABASE_URL
+  projectId: process.env.REACT_APP_PROJECT_ID,
+  authDomain: process.env.REACT_APP_AUTH_DOMAIN,
+  databaseURL: process.env.REACT_APP_DATABASE_URL,
+  messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID
 };
 
 firebase.initializeApp(firebaseConfig);
 
-function App() {
+function TodoList() {
   const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(true);
   const [password, setPassword] = useState("");
   const [todoList, setTodoList] = useState([]);
   const [newTodoBody, setNewTodoItem] = useState("");
@@ -29,7 +32,7 @@ function App() {
   const [currentUser, setCurrentUser] = useState({ uid: "", email: "" });
 
   useEffect(() => {
-    function setupApp() {
+    const setupApp = () => {
       firebase.auth().onAuthStateChanged(user => {
         if (user) {
           setCurrentUser({
@@ -53,9 +56,7 @@ function App() {
                 };
                 todos.push(todo);
               });
-
-              setTodoList(todos);
-              setAllTodoItems(todos);
+              save(todos);
             })
             .catch(error => {
               console.log("Error getting document:", error);
@@ -63,10 +64,16 @@ function App() {
         } else {
           setCurrentUser({ uid: "" });
         }
+        setLoading(false);
       });
-    }
-    setupApp();
-  }, []);
+    };
+    setupApp()
+  }, [newTodoBody]);
+
+  const save = list => {
+    setAllTodoItems(list);
+    setTodoList(list);
+  };
 
   const onSignIn = () => {
     firebase
@@ -86,23 +93,6 @@ function App() {
       });
   };
 
-  const onSignOut = () => {
-    firebase
-      .auth()
-      .signOut()
-      .then(
-        () => {
-          console.log("Signed Out");
-          setCurrentUser({ uid: "" });
-          setAllTodoItems([]);
-          setTodoList([]);
-        },
-        error => {
-          console.error("Sign Out Error", error);
-        }
-      );
-  };
-
   const createUserAccount = () => {
     firebase
       .auth()
@@ -120,37 +110,20 @@ function App() {
       });
   };
 
-  const createNewTodo = body => {
-    const db = firebase.firestore();
-    const newTodo = {
-      body: body,
-      status: "active",
-      uid: currentUser.uid
-    };
-
-    const jsonTodo = JSON.parse(JSON.stringify(newTodo));
-    db.collection("todos")
-      .doc()
-      .set(jsonTodo);
-
-    const newTodoList = [...todoList, newTodo];
-    setTodoList(newTodoList);
-    setAllTodoItems(newTodoList);
-    setNewTodoItem("");
-  };
-
-  const editTodo = (id, body) => {
-    const updatedTodo = todoList.find(todo => todo.id === id);
-    updatedTodo.body = body;
-
-    let foundIndex = todoList.findIndex(todo => todo.id === id);
-
-    todoList[foundIndex] = updatedTodo;
-
-    const newTodoList = [...todoList];
-    setTodoList(newTodoList);
-    setAllTodoItems(newTodoList);
-    saveToFireStore(id);
+  const onSignOut = () => {
+    firebase
+      .auth()
+      .signOut()
+      .then(
+        () => {
+          console.log("Signed Out");
+          setCurrentUser({ uid: "" });
+          save([]);
+        },
+        error => {
+          console.error("Sign Out Error", error);
+        }
+      );
   };
 
   const submitTodo = (body, idx) => {
@@ -161,11 +134,42 @@ function App() {
     }
   };
 
+  const createNewTodo = body => {
+    const db = firebase.firestore();
+    const newTodo = {
+      body: body,
+      status: "active",
+      uid: currentUser.uid
+    };
+
+    const jsonTodo = JSON.parse(JSON.stringify(newTodo));
+    db.collection("todos")
+      .add(jsonTodo)
+      .then(docRef => {
+        newTodo.id = docRef.id;
+      })
+      .catch(error => {
+        console.error("Error adding document: ", error);
+      });
+    const newTodoList = [...todoList, newTodo];
+    save(newTodoList);
+    setNewTodoItem("");
+  };
+
+  const editTodo = (id, body) => {
+    const updatedTodo = todoList.find(todo => todo.id === id);
+    updatedTodo.body = body;
+    const foundIndex = todoList.findIndex(todo => todo.id === id);
+    todoList[foundIndex] = updatedTodo;
+    const newTodoList = [...todoList];
+    save(newTodoList);
+    saveToFireStore(id);
+  };
+
   const saveToFireStore = id => {
     const db = firebase.firestore();
     const newTodo = todoList.find(todo => todo.id === id);
     const jsonTodo = JSON.parse(JSON.stringify(newTodo));
-    console.log('saveToFireStore', id)
     if (id) {
       db.collection("todos")
         .doc(id)
@@ -194,9 +198,7 @@ function App() {
     todoList[foundIndex] = newTodo;
 
     const newTodoList = [...todoList];
-
-    setTodoList(newTodoList);
-    setAllTodoItems(newTodoList);
+    save(newTodoList);
     saveToFireStore(id);
   };
 
@@ -206,6 +208,32 @@ function App() {
     setTodoList(filteredTodoList);
   };
 
+  const renderPrompt = () => {
+    const isSignedIn = currentUser.email !== '' && currentUser.email !== undefined
+    if (isSignedIn  && todoList.length === 0) {
+      return <h1 className="Prompt">So many todos, so little time...</h1>
+    } else if (currentUser.email !== '' && todoList.length === 0) {
+      return <h1 className="Prompt">Signin to save your todos</h1>
+    }
+  }
+
+  const renderTodos = () => {
+    return todoList.map((todo, idx) => {
+      return (
+        <TodoItem
+          idx={idx}
+          todo={todo}
+          id={todo.id}
+          key={todo.id}
+          onKeyDown={keyPress}
+          submitEditTodo={submitTodo}
+          onToggleTodo={onToggleTodo}
+          onDeleteTodo={onDeleteTodo}
+        />
+      );
+    })
+  }
+
   const onDeleteTodo = id => {
     const db = firebase.firestore();
     const todoRef = db.collection("todos");
@@ -213,7 +241,8 @@ function App() {
       .doc(id)
       .delete()
       .then(() => {
-        console.log("Document successfully deleted!");
+        const newTodoList = todoList.filter(todo => todo.id !== id);
+        save(newTodoList);
       })
       .catch(error => {
         console.error("Error removing document: ", error);
@@ -228,35 +257,17 @@ function App() {
   ).length;
 
   return (
-    <div
-      className="App"
-      style={{
-        backgroundImage:
-          "url(" +
-          "https://c.pxhere.com/photos/fe/10/sunset_day_summer_sky_beauty_blue_sky_sunny_day_nature-634629.jpg!d" +
-          ")",
-        backgroundPosition: "center",
-        backgroundSize: "cover",
-        backgroundRepeat: "no-repeat"
-      }}
-    >
-      <div className="Navigation">
-        {process.env.REACT_APP_TEST}
-        {currentUser.uid !== "" ? (
-          <button className="" onClick={onSignOut}>
-            Sign Out
-          </button>
-        ) : (
-          <SignInForm
-            email={email}
-            password={password}
-            onSignIn={onSignIn}
-            setEmail={setEmail}
-            setPassword={setPassword}
-          />
-        )}
-      </div>
-      <h1 className="Prompt">Get Job Todo List</h1>
+    <div className="App">
+      <Navigation
+        email={email}
+        password={password}
+        onSignIn={onSignIn}
+        setEmail={setEmail}
+        onSignOut={onSignOut}
+        setPassword={setPassword}
+        currentUser={currentUser}
+      />
+      <h1 className="Prompt Prompt-Title">Todo List</h1>
       <input
         autoFocus
         value={newTodoBody}
@@ -270,46 +281,36 @@ function App() {
         }}
       />
       <div className="SortingButtons">
-        <button className="Btn" onClick={() => setNewFilter(null)}>
-          All {allTodoItemsCount}
-        </button>
-        <button className="Btn" onClick={() => setNewFilter("done")}>
-          Done {doneTodoItemsCount}
-        </button>
-        <button className="Btn" onClick={() => setNewFilter("active")}>
-          Active {activeTodoItemsCount}
-        </button>
+        <FilterButton
+          prompt="All"
+          count={allTodoItemsCount}
+          setNewFilter={() => setNewFilter(null)}
+        />
+        <FilterButton
+          prompt="Done"
+          count={doneTodoItemsCount}
+          setNewFilter={() => setNewFilter("done")}
+        />
+        <FilterButton
+          prompt="Active"
+          count={activeTodoItemsCount}
+          setNewFilter={() => setNewFilter("active")}
+        />
       </div>
       <div className="TodoContainer">
-        {todoList.map((todo, idx) => {
-          return (
-            <TodoItem
-              idx={idx}
-              todo={todo}
-              id={todo.id}
-              key={todo.id}
-              onKeyDown={keyPress}
-              submitEditTodo={submitTodo}
-              onToggleTodo={onToggleTodo}
-              onDeleteTodo={onDeleteTodo}
-            />
-          );
-        })}
+        {loading && <div className="loader" />}
+        {renderPrompt()}
+        {renderTodos()}
       </div>
-      <div />
       <Footer />
     </div>
   );
 }
 
-const LaApp = () => (
+const App = () => (
   <Router>
-    {/* here's a div */}
-    <div>
-      {/* here's a Route */}
-      <Route path="/" component={App} />
-    </div>
+    <Route path="/" component={TodoList} />
   </Router>
 );
 
-export default LaApp;
+export default App;

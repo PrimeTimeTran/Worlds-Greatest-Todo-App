@@ -37,7 +37,6 @@ const TodoItem = ({
   const keyPress = e => {
     if (e.keyCode === 13) {
       setIsEditing(false);
-      console.log('tototo', typeof submitEditTodo)
       submitEditTodo(e.target.value, id);
     }
   };
@@ -48,33 +47,35 @@ const TodoItem = ({
 
   const isDone = status === "done";
 
+  const todoBodyWithNum = idx + 1 + '. ' + todoBody
+
   return (
     <div
-      onClick={handleClick}
-      onDoubleClick={handleDoubleClick}
       className={`TodoItem TodoItem${isDone ? "Done" : "Active"}`}
     >
-      <div className="InnerTodoContainer">
-        {isEditing ? (
-          <input
-            autoFocus
-            value={todoBody}
-            onChange={onChange}
-            onKeyDown={keyPress}
-            className="EditTodo"
-            placeholder="Enter todo name here"
-            onBlur={() => setIsEditing(!isEditing)}
-          />
-        ) : (
-          idx + 1 + '. ' + todoBody
-        )}
-      </div>
-      <button 
-        onClick={() => onDeleteTodo(id)}
-        style={{ margin: 20, height: '50%', width: '8rem' }}
+      <div className="InnerTodoContainer"
+        onClick={handleClick}
+        onDoubleClick={handleDoubleClick}
       >
-        Delete
-      </button>
+        {isEditing 
+          ? (<input
+              autoFocus
+              value={todoBody}
+              onChange={onChange}
+              onKeyDown={keyPress}
+              className="EditTodo"
+              placeholder="Enter todo name here"
+              onBlur={() => setIsEditing(!isEditing)}
+            />
+          ) 
+          : todoBodyWithNum}
+      </div>
+      <div 
+        className="Btn-Delete"
+        onClick={() => onDeleteTodo(id)}
+      >
+        X
+      </div>
     </div>
   );
 };
