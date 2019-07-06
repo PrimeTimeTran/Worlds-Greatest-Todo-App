@@ -216,10 +216,10 @@ function App() {
   };
 
   const setNewFilter = type => {
+    setFilter(type);
     if (type === null) return setTodoList(allTodoItems);
     const filteredTodoList = allTodoItems.filter(todo => todo.status === type);
     setTodoList(filteredTodoList);
-    setFilter(type);
   };
 
   const onDeleteTodo = id => {

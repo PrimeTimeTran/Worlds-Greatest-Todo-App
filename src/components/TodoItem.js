@@ -49,7 +49,6 @@ const TodoItem = ({
 
   const isDone = status === "Done";
 
-
   return (
     <div
       className={`TodoItem TodoItem${isDone ? "Done" : "Active"}`}
