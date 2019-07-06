@@ -27,7 +27,7 @@
 
 .Prompt {
   color: white;
-  font-size: 3rem;
+  font-size: 2rem;
   text-shadow: 3px 3px 5px #000;
   font-family: "Roboto", Times, serif;
 }
@@ -38,7 +38,7 @@
 }
 
 .TodoContainer {
-  width: 95%;
+  width: 50%;
   height: 50rem;
   opacity: 0.85;
   display: flex;
@@ -52,20 +52,20 @@
 }
 
 .TodoItem {
-  width: 95%;
-  margin: 10px;
+  width: 75%;
+  margin: 5px;
   display: flex;
   height: 3.5rem;
-  font-size: 2rem;
   color: #FCFCFC;
+  font-size: 1.2rem;
   font-weight: bold;
   text-align: center;
-  border-radius: 0.5rem;
   align-items: center;
-  justify-content: space-between;
   border-style: solid;
-  border-color: white;
   border-width: 0.5px;
+  border-color: white;
+  border-radius: 0.5rem;
+  justify-content: space-between;
 }
 
 .TodoItemDone {
@@ -78,7 +78,7 @@
 }
 
 .NewTodoInput {
-  width: 60rem;
+  width: 50rem;
   height: 55px;
   text-align: center;
 }
@@ -89,8 +89,8 @@
 }
 
 input, select, textarea {
-  font-size: 2rem;
   color: white;
+  font-size: 1.2rem;
   font-weight: bold;
   background-color: rgba(0, 0, 0, 0.6)
 }
@@ -98,6 +98,7 @@ input, select, textarea {
 ::placeholder {
   opacity: 1;
   font-size: 2rem;
+  color: rgba(255, 255, 255, 0.714);
 }
 
 .SortingButtons {
@@ -105,7 +106,7 @@ input, select, textarea {
   margin: 1rem;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: center;
 }
 
 .SignInFormNavigation {
@@ -124,16 +125,17 @@ input, select, textarea {
 }
 
 .Btn {
-  width: 300px;
-  height: 50px;
+  width: 15rem;
+  height: 3rem;
+  margin-left: 1rem;
   display: flex;
   color: white;
-  font-size: 2rem;
+  font-size: 1.2rem;
   font-weight: bold;
   align-items: center;
   justify-content: center;
   background-color: #084C61;
-  border-radius: 1rem;
+  border-radius: 0.5rem;
 }
 
 .Btn-Signout {
@@ -169,7 +171,7 @@ input, select, textarea {
 .InnerTodoContainer {
   width: 100%;
   display: flex; 
-  padding: 1.5rem;
+  padding: 0.5rem;
   flex-direction: row;
   align-items: 'center';  
   align-content: center;

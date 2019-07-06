@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { FaCircle, FaList, FaCheckCircle } from 'react-icons/fa';
+import { FaCircle, FaCheckCircle } from "react-icons/fa";
 
 const TodoItem = ({
   id,
@@ -47,41 +47,46 @@ const TodoItem = ({
     setTodoBody(e.target.value);
   };
 
-  const isDone = status === "Done";
+  const renderIcon = () => {
+    return status === "Done" ? (
+      <FaCheckCircle color="lightblue" />
+    ) : (
+      <FaCircle color="lightgrey" />
+    );
+  };
+
+  const itemCount = idx + 1 + ". ";
 
   return (
     <div
-      className={`TodoItem TodoItem${isDone ? "Done" : "Active"}`}
+      onClick={handleClick}
+      onDoubleClick={handleDoubleClick}
+      className={`TodoItem TodoItem${status === "Done" ? "Done" : "Active"}`}
     >
       <div style={{ marginLeft: 10, marginRight: 10, width: 50 }}>
-        {idx + 1 + '. '}
+        {itemCount}
       </div>
-      {isDone ? <FaCheckCircle color="lightblue" /> : <FaCircle color="lightgrey" />}
-      <div className="InnerTodoContainer"
-        onClick={handleClick}
-        onDoubleClick={handleDoubleClick}
-      >
-        {isEditing 
-          ? (<input
-              autoFocus
-              value={todoBody}
-              onChange={onChange}
-              onKeyDown={keyPress}
-              className="EditTodo"
-              placeholder="Enter todo name here"
-              onBlur={() => setIsEditing(!isEditing)}
-            />
-          ) 
-          : todoBody}
+      {renderIcon()}
+      <div className="InnerTodoContainer">
+        {isEditing ? (
+          <input
+            autoFocus
+            value={todoBody}
+            onChange={onChange}
+            onKeyDown={keyPress}
+            className="EditTodo"
+            placeholder="Enter todo name here"
+            onBlur={() => setIsEditing(!isEditing)}
+          />
+        ) : (
+          todoBody
+        )}
       </div>
-      <div 
-        className="Btn-Delete"
-        onClick={() => onDeleteTodo(id)}
-      >
+      <div className="Btn-Delete" onClick={() => onDeleteTodo(id)}>
         X
       </div>
     </div>
   );
 };
 
-export default TodoItem
+export default TodoItem;
