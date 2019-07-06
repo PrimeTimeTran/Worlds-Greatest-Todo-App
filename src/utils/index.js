@@ -1,0 +1,27 @@
+const IMAGES = [
+  'https://images5.alphacoders.com/324/324310.jpg',
+  'https://cdn.wallpapersafari.com/87/29/aKnrAQ.jpg',
+  'https://cdn.wallpapersafari.com/54/18/IOiRE9.jpg',
+  'https://cdn.wallpapersafari.com/59/0/abRX1J.jpg',
+  'https://cdn.wallpapersafari.com/82/50/CAHy6G.jpg',
+  'https://cdn.wallpapersafari.com/22/70/O3Le85.jpg',
+  'https://cdn.wallpapersafari.com/84/87/qUcZf8.jpg',
+  'https://cdn.wallpapersafari.com/86/35/yRkorx.jpg',
+  'https://cdn.wallpapersafari.com/14/39/3dmw0N.jpg',
+  'https://cdn.wallpapersafari.com/75/11/9p5exb.jpg',
+  'https://cdn.wallpapersafari.com/60/77/6DsTgo.jpg',
+  'https://cdn.wallpapersafari.com/20/42/TV57dP.jpg',
+  'https://cdn.wallpapersafari.com/60/36/3qsjr1.jpg',
+  'https://cdn.wallpapersafari.com/18/90/iNWHCZ.jpg',
+  'https://cdn.wallpapersafari.com/83/29/JZlAdc.jpg',
+  'https://cdn.wallpapersafari.com/18/30/SsH8Tf.jpg',
+  'https://cdn.wallpapersafari.com/17/92/QmSeLj.jpg',
+  'https://cdn.wallpapersafari.com/66/84/j91dOS.jpg',
+  'https://img.wallpapersafari.com/desktop/1600/900/54/6/mnoyFT.jpg',
+  'https://bestwallpapers.in/wp-content/uploads/2018/04/abstract-pattern-colorful-4k-wallpaper-3840x2160.jpg',
+  'https://cdn.cnn.com/cnnnext/dam/assets/171222140328-03-plastic-straws-stock-full-169.jpg',
+  'https://wallpaper21.com/wp-content/uploads/2017/09/At-Last-Beautiful-warm-emotions-colors-in-this-digital-art-by-Alena-Aenami-wallpaper-wpt8202212.jpg',
+  'https://wallpaperwalldesign.com/wp-content/uploads/2019/04/wallpaper-design-images-beautiful-colorful-abstract-hd-wallpaper-abstract-art-design-wallpaper-hd-of-wallpaper-design-images.jpg',
+]
+
+export const randomBackgroundImage  = () => IMAGES[Math.floor(Math.random() * IMAGES.length)];
