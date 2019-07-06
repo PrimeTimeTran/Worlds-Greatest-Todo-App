@@ -2,30 +2,33 @@ import React from "react";
 
 import FilterButton from "./FilterButton";
 
-const SortingOptions = ({ setNewFilter, allTodoItems }) => {
+const SortingOptions = ({ setNewFilter, allTodoItems, filter }) => {
   const allTodoItemsCount = allTodoItems.length;
-  const doneTodoItemsCount = allTodoItems.filter(todo => todo.status === "done")
+  const doneTodoItemsCount = allTodoItems.filter(todo => todo.status === "Done")
     .length;
   const activeTodoItemsCount = allTodoItems.filter(
-    todo => todo.status === "active"
+    todo => todo.status === "Active"
   ).length;
 
   return (
     <div className="SortingButtons">
       <FilterButton
         prompt="All"
+        focused={filter === null}
         count={allTodoItemsCount}
         setNewFilter={() => setNewFilter(null)}
       />
       <FilterButton
         prompt="Done"
+        focused={filter === 'Done'}
         count={doneTodoItemsCount}
-        setNewFilter={() => setNewFilter("done")}
+        setNewFilter={() => setNewFilter("Done")}
       />
       <FilterButton
         prompt="Active"
+        focused={filter === 'Active'}
         count={activeTodoItemsCount}
-        setNewFilter={() => setNewFilter("active")}
+        setNewFilter={() => setNewFilter("Active")}
       />
     </div>
   );

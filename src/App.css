@@ -42,7 +42,6 @@
   height: 50rem;
   opacity: 0.85;
   display: flex;
-  padding-top: 150px;
   overflow-y: scroll; 
   position: relative;
   border-radius: 1rem;
@@ -54,21 +53,24 @@
 
 .TodoItem {
   width: 95%;
-  height: 3.5rem;
   margin: 10px;
   display: flex;
+  height: 3.5rem;
   font-size: 2rem;
   color: #FCFCFC;
   font-weight: bold;
   text-align: center;
-  border-radius: 1rem;
+  border-radius: 0.5rem;
   align-items: center;
   justify-content: space-between;
+  border-style: solid;
+  border-color: white;
+  border-width: 0.5px;
 }
 
 .TodoItemDone {
-  background-color: rgba(10, 28, 46, 0.812);
   text-decoration: line-through;
+  background-color: rgba(10, 28, 46, 0.812);
 }
 
 .TodoItemActive {
@@ -88,8 +90,9 @@
 
 input, select, textarea {
   font-size: 2rem;
-  color: #160C28;
-  opacity: 0.9;
+  color: white;
+  font-weight: bold;
+  background-color: rgba(0, 0, 0, 0.6)
 }
 
 ::placeholder {
@@ -129,7 +132,8 @@ input, select, textarea {
   font-weight: bold;
   align-items: center;
   justify-content: center;
-  background-color: #AF3B6E;
+  background-color: #084C61;
+  border-radius: 1rem;
 }
 
 .Btn-Signout {
@@ -138,6 +142,7 @@ input, select, textarea {
   font-size: 1.5rem;
   align-self: center;
   border-width: 0rem;
+  border-radius: 0.5rem;
   background-color: #160C28;
 }
 
@@ -145,11 +150,20 @@ input, select, textarea {
   width: 5rem;
   height: 1.5rem;
   font-size: 1rem;
+  border-radius: 0.5rem;
 }
 
 .Btn-Delete {
   color: white;
   margin-right: 2rem;
+}
+
+.Btn-Delete {
+  margin-right: 2rem;
+}
+
+.Btn-Focused {
+  background-color: #DB504A;
 }
 
 .InnerTodoContainer {

@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 
+import { FaCircle, FaList, FaCheckCircle } from 'react-icons/fa';
+
 const TodoItem = ({
   id,
   idx,
@@ -45,14 +47,17 @@ const TodoItem = ({
     setTodoBody(e.target.value);
   };
 
-  const isDone = status === "done";
+  const isDone = status === "Done";
 
-  const todoBodyWithNum = idx + 1 + '. ' + todoBody
 
   return (
     <div
       className={`TodoItem TodoItem${isDone ? "Done" : "Active"}`}
     >
+      <div style={{ marginLeft: 10, marginRight: 10, width: 50 }}>
+        {idx + 1 + '. '}
+      </div>
+      {isDone ? <FaCheckCircle color="lightblue" /> : <FaCircle color="lightgrey" />}
       <div className="InnerTodoContainer"
         onClick={handleClick}
         onDoubleClick={handleDoubleClick}
@@ -68,7 +73,7 @@ const TodoItem = ({
               onBlur={() => setIsEditing(!isEditing)}
             />
           ) 
-          : todoBodyWithNum}
+          : todoBody}
       </div>
       <div 
         className="Btn-Delete"

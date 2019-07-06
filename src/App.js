@@ -9,7 +9,7 @@ import TodoInput from "./components/TodoInput";
 import Navigation from "./components/Navigation";
 import SortingOptions from "./components/SortingOptions";
 
-import { randomBackgroundImage } from './utils'
+import { randomBackgroundImage } from "./utils";
 
 import "./App.css";
 
@@ -27,12 +27,16 @@ firebase.initializeApp(firebaseConfig);
 
 function App() {
   const [email, setEmail] = useState("");
+  const [filter, setFilter] = useState(null);
   const [loading, setLoading] = useState(true);
   const [password, setPassword] = useState("");
   const [todoList, setTodoList] = useState([]);
   const [newTodoBody, setNewTodoItem] = useState("");
   const [allTodoItems, setAllTodoItems] = useState([]);
   const [currentUser, setCurrentUser] = useState({ uid: "", email: "" });
+  const [bgImage, setBgImage] = useState({
+    backgroundImage: `url(${randomBackgroundImage()})`
+  });
 
   useEffect(() => {
     const setupApp = () => {
@@ -143,7 +147,7 @@ function App() {
     const db = firebase.firestore();
     const newTodo = {
       body: body,
-      status: "active",
+      status: "Active",
       uid: currentUser.uid,
       createdAt: new Date()
     };
@@ -160,6 +164,9 @@ function App() {
     const newTodoList = [...todoList, newTodo];
     save(newTodoList);
     setNewTodoItem("");
+    setBgImage({
+      backgroundImage: `url(${randomBackgroundImage()})`
+    });
   };
 
   const editTodo = (id, body) => {
@@ -194,10 +201,10 @@ function App() {
   const onToggleTodo = id => {
     const newTodo = todoList.find(todo => todo.id === id);
 
-    if (newTodo.status === "done") {
-      newTodo.status = "active";
+    if (newTodo.status === "Done") {
+      newTodo.status = "Active";
     } else {
-      newTodo.status = "done";
+      newTodo.status = "Done";
     }
 
     let foundIndex = todoList.findIndex(todo => todo.id === id);
@@ -212,16 +219,7 @@ function App() {
     if (type === null) return setTodoList(allTodoItems);
     const filteredTodoList = allTodoItems.filter(todo => todo.status === type);
     setTodoList(filteredTodoList);
-  };
-
-  const renderPrompt = () => {
-    const isSignedIn =
-      currentUser.email !== "" && currentUser.email !== undefined;
-    if (isSignedIn && todoList.length === 0) {
-      return <h1 className="Prompt">So many todos, so little time...</h1>;
-    } else if (currentUser.email !== "" && todoList.length === 0) {
-      return <h1 className="Prompt">Signin to save your todos</h1>;
-    }
+    setFilter(type);
   };
 
   const onDeleteTodo = id => {
@@ -239,12 +237,8 @@ function App() {
       });
   };
 
-  const rdmBgImage = {
-    backgroundImage: `url(${randomBackgroundImage()})`
-  }
-
   return (
-    <div className="App" style={rdmBgImage}>
+    <div className="App" style={bgImage}>
       <Navigation
         email={email}
         password={password}
@@ -260,21 +254,20 @@ function App() {
         currentUser={currentUser}
         setNewTodoItem={setNewTodoItem}
       />
-      <SortingOptions 
+      <SortingOptions
+        filter={filter}
         allTodoItems={allTodoItems}
         setNewFilter={setNewFilter}
       />
-      <div className="TodoContainer">
-        {loading && <div className="loader" />}
-        {renderPrompt()}
-        <TodoList
-          todoList={todoList}
-          onKeyDown={keyPress}
-          submitEditTodo={submitTodo}
-          onToggleTodo={onToggleTodo}
-          onDeleteTodo={onDeleteTodo}
-        />
-      </div>
+      <TodoList
+        loading={loading}
+        todoList={todoList}
+        keyPress={keyPress}
+        currentUser={currentUser}
+        submitEditTodo={submitTodo}
+        onToggleTodo={onToggleTodo}
+        onDeleteTodo={onDeleteTodo}
+      />
       <Footer />
     </div>
   );

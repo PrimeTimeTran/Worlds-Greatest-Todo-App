@@ -28,7 +28,7 @@ const Footer = ({ children }) => {
       <div style={style}>
         <h4>
           Built with ️❤️ by{" "}
-          <a href="https://github.com/PrimeTimeTran">PrimeTimeTran</a>
+          <a href="https://github.com/PrimeTimeTran/r-TodoList">PrimeTimeTran</a>
         </h4>
       </div>
     </div>
