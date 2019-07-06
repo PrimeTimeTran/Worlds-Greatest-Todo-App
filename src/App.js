@@ -210,7 +210,7 @@ function App() {
           />
         )}
       </div>
-      <h1>Todo App</h1>
+      <h1>Todo App by Loi</h1>
       <input
         autoFocus
         value={newTodoBody}
