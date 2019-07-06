@@ -1,6 +1,7 @@
 {
   "rules": {
     ".read": true,
-    ".write": true
+    ".write": true,
+    ".delete": true
   }
 }

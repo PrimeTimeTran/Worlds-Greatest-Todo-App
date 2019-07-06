@@ -6,6 +6,7 @@ import "./App.css";
 
 import TodoItem from "./components/TodoItem";
 import SignInForm from "./components/SignInForm";
+import Footer from "./components/Footer";
 
 const firebaseConfig = {
   storageBucket: "",
@@ -19,73 +20,59 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-
-
-
 function App() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [todoList, setTodoList] = useState([]);
   const [newTodoBody, setNewTodoItem] = useState("");
   const [allTodoItems, setAllTodoItems] = useState([]);
-  const [currentUser, setCurrentUser] = useState({ uid: '', email: '' });
+  const [currentUser, setCurrentUser] = useState({ uid: "", email: "" });
 
   useEffect(() => {
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        setCurrentUser({
-          uid: user.uid,
-          email: user.email
-        })
-
-        const db = firebase.firestore();
-        const todosRef = db.collection("todos");
-        const query = todosRef.where("uid", "==", user.uid);
-
-        const todos = [];
-
-        query
-          .get()
-          .then(function(querySnapshot) {
-            querySnapshot.forEach(function(doc) {
-              todos.push(doc.data());
-            });
-
-            setTodoList(todos);
-            setAllTodoItems(todos);
-          })
-          .catch(function(error) {
-            console.log("Error getting document:", error);
+    function setupApp() {
+      firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+          setCurrentUser({
+            uid: user.uid,
+            email: user.email
           });
-      } else {
-        setCurrentUser({ uid: "" });
-      }
-    });
-  }, []);
 
-  const onSignOut = () => {
-    firebase
-      .auth()
-      .signOut()
-      .then(
-        function() {
-          console.log("Signed Out");
+          const db = firebase.firestore();
+          const todosRef = db.collection("todos");
+          const query = todosRef.where("uid", "==", user.uid);
+
+          const todos = [];
+
+          query
+            .get()
+            .then(querySnapshot => {
+              querySnapshot.forEach(doc => {
+                const todo = {
+                  ...doc.data(),
+                  id: doc.id
+                };
+                todos.push(todo);
+              });
+
+              setTodoList(todos);
+              setAllTodoItems(todos);
+            })
+            .catch(error => {
+              console.log("Error getting document:", error);
+            });
+        } else {
           setCurrentUser({ uid: "" });
-          setAllTodoItems([]);
-          setTodoList([]);
-        },
-        function(error) {
-          console.error("Sign Out Error", error);
         }
-      );
-  };
+      });
+    }
+    setupApp();
+  }, []);
 
   const onSignIn = () => {
     firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
       .then(user => {
-        console.log("user", user);
         setCurrentUser({
           uid: user.uid,
           email: user.user.email
@@ -93,13 +80,27 @@ function App() {
         setPassword("");
         setEmail("");
       })
-      .catch(function(error) {
-        // Handle Errors here.
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        console.log("Account not found, creating.");
+      .catch(error => {
+        console.log("Account not found, creating a new one!");
         createUserAccount();
       });
+  };
+
+  const onSignOut = () => {
+    firebase
+      .auth()
+      .signOut()
+      .then(
+        () => {
+          console.log("Signed Out");
+          setCurrentUser({ uid: "" });
+          setAllTodoItems([]);
+          setTodoList([]);
+        },
+        error => {
+          console.error("Sign Out Error", error);
+        }
+      );
   };
 
   const createUserAccount = () => {
@@ -114,58 +115,89 @@ function App() {
         setPassword("");
         setEmail("");
       })
-      .catch(function(error) {
-        var errorCode = error.code;
-        var errorMessage = error.message;
+      .catch(error => {
+        console.log("Failed to create new account!");
       });
   };
 
-  const submitNewTodoItem = (body, idx) => {
-    let newTodoList;
+  const createNewTodo = body => {
+    const db = firebase.firestore();
+    const newTodo = {
+      body: body,
+      status: "active",
+      uid: currentUser.uid
+    };
 
-    if (idx !== undefined) {
-      const updatingTodoItem = todoList[idx];
-      updatingTodoItem.body = body;
-      todoList[idx] = updatingTodoItem;
-      newTodoList = [ ...todoList ]
-    } else {
-      const newItem = {
-        status: "active",
-        uid: currentUser.uid,
-        body: newTodoBody || body,
-      };
-      
-      newTodoList = [...todoList, newItem];
-      
-      const db = firebase.firestore();
-      let go = JSON.parse(JSON.stringify(newItem))
-      db.collection("todos")
-        .doc()
-        .set(go)
-        .then(la => {
-          console.log('lalal', la)
-        });
-      setNewTodoItem("");
-    }
+    const jsonTodo = JSON.parse(JSON.stringify(newTodo));
+    db.collection("todos")
+      .doc()
+      .set(jsonTodo);
+
+    const newTodoList = [...todoList, newTodo];
     setTodoList(newTodoList);
     setAllTodoItems(newTodoList);
+    setNewTodoItem("");
   };
 
-  const keyPress = (e) => {
-    if (e.keyCode === 13) submitNewTodoItem();
+  const editTodo = (id, body) => {
+    const updatedTodo = todoList.find(todo => todo.id === id);
+    updatedTodo.body = body;
+
+    let foundIndex = todoList.findIndex(todo => todo.id === id);
+
+    todoList[foundIndex] = updatedTodo;
+
+    const newTodoList = [...todoList];
+    setTodoList(newTodoList);
+    setAllTodoItems(newTodoList);
+    saveToFireStore(id);
   };
 
-  const onToggleTodo = idx => {
-    const newTodo = todoList[idx];
+  const submitTodo = (body, idx) => {
+    if (idx !== undefined) {
+      editTodo(idx, body);
+    } else {
+      createNewTodo(body);
+    }
+  };
+
+  const saveToFireStore = id => {
+    const db = firebase.firestore();
+    const newTodo = todoList.find(todo => todo.id === id);
+    const jsonTodo = JSON.parse(JSON.stringify(newTodo));
+    console.log('saveToFireStore', id)
+    if (id) {
+      db.collection("todos")
+        .doc(id)
+        .set(jsonTodo);
+    } else {
+      db.collection("todos")
+        .doc()
+        .set(jsonTodo);
+    }
+  };
+
+  const keyPress = e => {
+    if (e.keyCode === 13) submitTodo(newTodoBody);
+  };
+
+  const onToggleTodo = id => {
+    const newTodo = todoList.find(todo => todo.id === id);
+
     if (newTodo.status === "done") {
       newTodo.status = "active";
     } else {
       newTodo.status = "done";
     }
 
-    todoList[idx] = newTodo;
+    let foundIndex = todoList.findIndex(todo => todo.id === id);
+    todoList[foundIndex] = newTodo;
+
     const newTodoList = [...todoList];
+
     setTodoList(newTodoList);
+    setAllTodoItems(newTodoList);
+    saveToFireStore(id);
   };
 
   const setNewFilter = type => {
@@ -174,15 +206,18 @@ function App() {
     setTodoList(filteredTodoList);
   };
 
-  const onEditTodo = idx => {
-    const newTodoItem = {
-      ...todoList[idx],
-      isEditing: !todoList[idx].isEditing
-    };
-
-    todoList[idx] = newTodoItem;
-    const newTodoList = [...todoList];
-    setTodoList(newTodoList);
+  const onDeleteTodo = id => {
+    const db = firebase.firestore();
+    const todoRef = db.collection("todos");
+    todoRef
+      .doc(id)
+      .delete()
+      .then(() => {
+        console.log("Document successfully deleted!");
+      })
+      .catch(error => {
+        console.error("Error removing document: ", error);
+      });
   };
 
   const allTodoItemsCount = allTodoItems.length;
@@ -192,14 +227,25 @@ function App() {
     todo => todo.status === "active"
   ).length;
 
-  
-
   return (
-    <div className="App">
+    <div
+      className="App"
+      style={{
+        backgroundImage:
+          "url(" +
+          "https://c.pxhere.com/photos/fe/10/sunset_day_summer_sky_beauty_blue_sky_sunny_day_nature-634629.jpg!d" +
+          ")",
+        backgroundPosition: "center",
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat"
+      }}
+    >
       <div className="Navigation">
         {process.env.REACT_APP_TEST}
         {currentUser.uid !== "" ? (
-          <button onClick={onSignOut}>Sign Out</button>
+          <button className="" onClick={onSignOut}>
+            Sign Out
+          </button>
         ) : (
           <SignInForm
             email={email}
@@ -210,42 +256,48 @@ function App() {
           />
         )}
       </div>
-      <h1>Todo App by Loi</h1>
+      <h1 className="Prompt">Get Job Todo List</h1>
       <input
         autoFocus
         value={newTodoBody}
         onKeyDown={keyPress}
         className="NewTodoInput"
-        placeholder={`Enter todo here ${currentUser.email !== undefined ? currentUser.email : ''}`}
+        placeholder={`Enter todo here ${
+          currentUser.email !== undefined ? currentUser.email : ""
+        }`}
         onChange={e => {
           setNewTodoItem(e.target.value);
         }}
       />
       <div className="SortingButtons">
-        <button onClick={() => setNewFilter(null)}>
+        <button className="Btn" onClick={() => setNewFilter(null)}>
           All {allTodoItemsCount}
         </button>
-        <button onClick={() => setNewFilter("done")}>
+        <button className="Btn" onClick={() => setNewFilter("done")}>
           Done {doneTodoItemsCount}
         </button>
-        <button onClick={() => setNewFilter("active")}>
+        <button className="Btn" onClick={() => setNewFilter("active")}>
           Active {activeTodoItemsCount}
         </button>
       </div>
-      {todoList.map((todo, idx) => {
-        return (
-          <TodoItem
-            idx={idx}
-            todo={todo}
-            key={todo.body}
-            onKeyDown={keyPress}
-            onEditTodo={onEditTodo}
-            submitNewTodoItem={submitNewTodoItem}
-            onToggleTodo={onToggleTodo}
-          />
-        );
-      })}
+      <div className="TodoContainer">
+        {todoList.map((todo, idx) => {
+          return (
+            <TodoItem
+              idx={idx}
+              todo={todo}
+              id={todo.id}
+              key={todo.id}
+              onKeyDown={keyPress}
+              submitEditTodo={submitTodo}
+              onToggleTodo={onToggleTodo}
+              onDeleteTodo={onDeleteTodo}
+            />
+          );
+        })}
+      </div>
       <div />
+      <Footer />
     </div>
   );
 }
