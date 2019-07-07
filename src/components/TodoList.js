@@ -34,8 +34,8 @@ const TodoList = ({
             key={todo.id}
             onKeyDown={keyPress}
             submitEditTodo={submitEditTodo}
-            onToggleTodo={onToggleTodo}
             onDeleteTodo={onDeleteTodo}
+            onToggleTodo={(id) => onToggleTodo(id)}
           />
         );
       })}

@@ -16,7 +16,7 @@ const TodoItem = ({
   let timer = 0;
   let delay = 200;
   let prevent = false;
-
+  
   const doDoubleClickAction = () => {
     setIsEditing(true);
   };

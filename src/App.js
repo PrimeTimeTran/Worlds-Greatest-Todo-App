@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import firebase from "firebase";
 import { BrowserRouter as Router, Route } from "react-router-dom";
@@ -26,6 +26,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 function App() {
+  const ref = useRef(firebase.firestore().collection("todos"));
   const [email, setEmail] = useState("");
   const [filter, setFilter] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -39,7 +40,29 @@ function App() {
   });
 
   useEffect(() => {
+    const onCollectionUpdate = querySnapshot => {
+      let todos = [];
+      querySnapshot.forEach(doc => {
+        const { uid, body, status, createdAt } = doc.data();
+        if (uid === "JcaPj5OxdsXbQ7YRPLJ3Bo6IQ7r1") {
+          todos.push({
+            uid,
+            body,
+            status,
+            createdAt,
+            id: doc.id,
+          });
+        }
+      });
+  
+      todos = todos.sort((a, b) => {
+        return new Date(b.date) - new Date(a.date);
+      });
+      save(todos)
+    };
+
     const setupApp = () => {
+      ref.current.onSnapshot(onCollectionUpdate)
       firebase.auth().onAuthStateChanged(user => {
         if (user) {
           setCurrentUser({
@@ -77,7 +100,7 @@ function App() {
       });
     };
     setupApp();
-  }, [newTodoBody]);
+  }, []);
 
   const save = list => {
     setAllTodoItems(list);
@@ -157,11 +180,18 @@ function App() {
       .add(jsonTodo)
       .then(docRef => {
         newTodo.id = docRef.id;
+        console.log('docRef.id', docRef.id)
+        console.log('newTodonewTodonewTodo', newTodo)
+        console.log('jsonTodo', newTodo)
+        db.collection("todos")
+          .doc(docRef.id)
+          .set(newTodo);
       })
       .catch(error => {
         console.error("Error adding document: ", error);
       });
     const newTodoList = [...todoList, newTodo];
+    console.log('newTodo', newTodo)
     save(newTodoList);
     setNewTodoItem("");
     setBgImage({
@@ -200,6 +230,8 @@ function App() {
 
   const onToggleTodo = id => {
     const newTodo = todoList.find(todo => todo.id === id);
+    console.log('onToggleTodo id', id)
+    console.log('onToggleTodo newTodo', newTodo)
 
     if (newTodo.status === "Done") {
       newTodo.status = "Active";
@@ -265,8 +297,8 @@ function App() {
         keyPress={keyPress}
         currentUser={currentUser}
         submitEditTodo={submitTodo}
-        onToggleTodo={onToggleTodo}
         onDeleteTodo={onDeleteTodo}
+        onToggleTodo={(id) => onToggleTodo(id)}
       />
       <Footer />
     </div>
