@@ -26,7 +26,6 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 function App() {
-  const ref = useRef(firebase.firestore().collection("todos"));
   const [email, setEmail] = useState("");
   const [filter, setFilter] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -34,6 +33,7 @@ function App() {
   const [todoList, setTodoList] = useState([]);
   const [newTodoBody, setNewTodoItem] = useState("");
   const [allTodoItems, setAllTodoItems] = useState([]);
+  const ref = useRef(firebase.firestore().collection("todos"));
   const [currentUser, setCurrentUser] = useState({ uid: "", email: "" });
   const [bgImage, setBgImage] = useState({
     backgroundImage: `url(${randomBackgroundImage()})`
@@ -43,26 +43,21 @@ function App() {
     const onCollectionUpdate = querySnapshot => {
       let todos = [];
       querySnapshot.forEach(doc => {
-        const { uid, body, status, createdAt } = doc.data();
-        if (uid === "JcaPj5OxdsXbQ7YRPLJ3Bo6IQ7r1") {
-          todos.push({
-            uid,
-            body,
-            status,
-            createdAt,
-            id: doc.id,
-          });
+        const { uid } = doc.data();
+        if (uid === currentUser.id) {
+          todos.push(doc.data());
         }
       });
-  
       todos = todos.sort((a, b) => {
-        return new Date(b.date) - new Date(a.date);
+        return (
+          new Date(b.createdAt.nanoseconds) - new Date(a.createdAt.nanoseconds)
+        );
       });
-      save(todos)
+      save(todos);
     };
 
     const setupApp = () => {
-      ref.current.onSnapshot(onCollectionUpdate)
+      ref.current.onSnapshot(onCollectionUpdate);
       firebase.auth().onAuthStateChanged(user => {
         if (user) {
           setCurrentUser({
@@ -74,7 +69,7 @@ function App() {
           const todosRef = db.collection("todos");
           const query = todosRef
             .where("uid", "==", user.uid)
-            .orderBy("createdAt", "asc");
+            .orderBy("createdAt", "desc");
 
           const todos = [];
 
@@ -103,8 +98,13 @@ function App() {
   }, []);
 
   const save = list => {
-    setAllTodoItems(list);
-    setTodoList(list);
+    const todos = list.sort((a, b) => {
+      return (
+        new Date(b.createdAt.nanoseconds) - new Date(a.createdAt.nanoseconds)
+      );
+    });
+    setAllTodoItems(todos);
+    setTodoList(todos);
   };
 
   const onSignIn = () => {
@@ -162,38 +162,22 @@ function App() {
     if (idx !== undefined) {
       editTodo(idx, body);
     } else {
+      console.log('createing new')
       createNewTodo(body);
     }
   };
 
   const createNewTodo = body => {
-    const db = firebase.firestore();
     const newTodo = {
       body: body,
       status: "Active",
       uid: currentUser.uid,
       createdAt: new Date()
     };
-
-    const jsonTodo = JSON.parse(JSON.stringify(newTodo));
-    db.collection("todos")
-      .add(jsonTodo)
-      .then(docRef => {
-        newTodo.id = docRef.id;
-        console.log('docRef.id', docRef.id)
-        console.log('newTodonewTodonewTodo', newTodo)
-        console.log('jsonTodo', newTodo)
-        db.collection("todos")
-          .doc(docRef.id)
-          .set(newTodo);
-      })
-      .catch(error => {
-        console.error("Error adding document: ", error);
-      });
     const newTodoList = [...todoList, newTodo];
-    console.log('newTodo', newTodo)
-    save(newTodoList);
     setNewTodoItem("");
+    save(newTodoList);
+    saveToFireStore(newTodo); 
     setBgImage({
       backgroundImage: `url(${randomBackgroundImage()})`
     });
@@ -210,28 +194,28 @@ function App() {
   };
 
   const saveToFireStore = id => {
-    const db = firebase.firestore();
-    const newTodo = todoList.find(todo => todo.id === id);
-    const jsonTodo = JSON.parse(JSON.stringify(newTodo));
-    if (id) {
+    if (typeof id === 'string') {
+      const db = firebase.firestore();
+      const newTodo = todoList.find(todo => todo.id === id);
+      const jsonTodo = JSON.parse(JSON.stringify(newTodo));
       db.collection("todos")
         .doc(id)
         .set(jsonTodo);
     } else {
+      const db = firebase.firestore();
+      const jsonTodo = JSON.parse(JSON.stringify(id));
       db.collection("todos")
         .doc()
-        .set(jsonTodo);
+        .set(jsonTodo)
     }
   };
 
   const keyPress = e => {
-    if (e.keyCode === 13) submitTodo(newTodoBody);
+    if (e.keyCode === 13) submitTodo(newTodoBody, undefined);
   };
 
   const onToggleTodo = id => {
-    const newTodo = todoList.find(todo => todo.id === id);
-    console.log('onToggleTodo id', id)
-    console.log('onToggleTodo newTodo', newTodo)
+    let newTodo = todoList.find(todo => todo.id === id);
 
     if (newTodo.status === "Done") {
       newTodo.status = "Active";
@@ -239,10 +223,9 @@ function App() {
       newTodo.status = "Done";
     }
 
-    let foundIndex = todoList.findIndex(todo => todo.id === id);
-    todoList[foundIndex] = newTodo;
-
-    const newTodoList = [...todoList];
+    const foundIndex = todoList.findIndex(todo => todo.id === id);
+    let newTodoList = [...todoList];
+    newTodoList[foundIndex] = newTodo;
     save(newTodoList);
     saveToFireStore(id);
   };
@@ -268,6 +251,8 @@ function App() {
         console.error("Error removing document: ", error);
       });
   };
+
+  console.log('tododod', todoList)
 
   return (
     <div className="App" style={bgImage}>
@@ -298,7 +283,7 @@ function App() {
         currentUser={currentUser}
         submitEditTodo={submitTodo}
         onDeleteTodo={onDeleteTodo}
-        onToggleTodo={(id) => onToggleTodo(id)}
+        onToggleTodo={id => onToggleTodo(id)}
       />
       <Footer />
     </div>
