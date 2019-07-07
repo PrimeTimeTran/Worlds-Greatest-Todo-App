@@ -231,7 +231,6 @@ function App() {
   };
 
   const onDeleteTodo = id => {
-    console.log('go', id)
     const db = firebase.firestore();
     const todoRef = db.collection("todos");
     todoRef
