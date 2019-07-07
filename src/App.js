@@ -170,7 +170,7 @@ function App() {
     const newTodoList = [...todoList, newTodo];
     setNewTodoItem("");
     save(newTodoList);
-    saveToFireStore(newTodo); 
+    saveToFireStore(newTodo);
     setBgImage({
       backgroundImage: `url(${randomBackgroundImage()})`
     });
@@ -188,8 +188,8 @@ function App() {
 
   const saveToFireStore = id => {
     const db = firebase.firestore();
-    let jsonTodo
-    if (typeof id === 'string') {
+    let jsonTodo;
+    if (typeof id === "string") {
       const newTodo = todoList.find(todo => todo.id === id);
       jsonTodo = JSON.parse(JSON.stringify(newTodo));
       db.collection("todos")
@@ -199,7 +199,7 @@ function App() {
       jsonTodo = JSON.parse(JSON.stringify(id));
       db.collection("todos")
         .doc()
-        .set(jsonTodo)
+        .set(jsonTodo);
     }
   };
 
@@ -273,7 +273,7 @@ function App() {
         keyPress={keyPress}
         currentUser={currentUser}
         submitEditTodo={submitTodo}
-        onDeleteTodo={(id) => onDeleteTodo(id)}
+        onDeleteTodo={id => onDeleteTodo(id)}
         onToggleTodo={onToggleTodo}
       />
       <Footer />
