@@ -43,31 +43,21 @@ function App() {
     const onCollectionUpdate = querySnapshot => {
       let todos = [];
       querySnapshot.forEach(doc => {
-        const { uid } = doc.data();
-        if (uid === currentUser.id) {
-          todos.push(doc.data());
-        }
+        todos.push({
+          id: doc.id,
+          ...doc.data()
+        });
       });
-
-      // Uncomment to get live updates from mobile app
-      // 
-      // todos = todos.sort((a, b) => {
-      //   return (
-      //     new Date(b.createdAt.nanoseconds) - new Date(a.createdAt.nanoseconds)
-      //   );
-      // });
-      // save(todos);
+      save(todos);
     };
 
     const setupApp = () => {
-      ref.current.onSnapshot(onCollectionUpdate);
       firebase.auth().onAuthStateChanged(user => {
         if (user) {
           setCurrentUser({
             uid: user.uid,
             email: user.email
           });
-
           const db = firebase.firestore();
           const todosRef = db.collection("todos");
           const query = todosRef
@@ -98,6 +88,7 @@ function App() {
       });
     };
     setupApp();
+    ref.current.onSnapshot(onCollectionUpdate);
   }, []);
 
   const save = list => {
@@ -196,16 +187,16 @@ function App() {
   };
 
   const saveToFireStore = id => {
+    const db = firebase.firestore();
+    let jsonTodo
     if (typeof id === 'string') {
-      const db = firebase.firestore();
       const newTodo = todoList.find(todo => todo.id === id);
-      const jsonTodo = JSON.parse(JSON.stringify(newTodo));
+      jsonTodo = JSON.parse(JSON.stringify(newTodo));
       db.collection("todos")
         .doc(id)
         .set(jsonTodo);
     } else {
-      const db = firebase.firestore();
-      const jsonTodo = JSON.parse(JSON.stringify(id));
+      jsonTodo = JSON.parse(JSON.stringify(id));
       db.collection("todos")
         .doc()
         .set(jsonTodo)
@@ -240,6 +231,7 @@ function App() {
   };
 
   const onDeleteTodo = id => {
+    console.log('go', id)
     const db = firebase.firestore();
     const todoRef = db.collection("todos");
     todoRef
@@ -282,7 +274,7 @@ function App() {
         keyPress={keyPress}
         currentUser={currentUser}
         submitEditTodo={submitTodo}
-        onDeleteTodo={onDeleteTodo}
+        onDeleteTodo={(id) => onDeleteTodo(id)}
         onToggleTodo={onToggleTodo}
       />
       <Footer />

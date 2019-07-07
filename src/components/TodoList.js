@@ -33,9 +33,9 @@ const TodoList = ({
             id={todo.id}
             key={todo.id}
             onKeyDown={keyPress}
-            submitEditTodo={submitEditTodo}
-            onDeleteTodo={onDeleteTodo}
             onToggleTodo={onToggleTodo}
+            submitEditTodo={submitEditTodo}
+            onDeleteTodo={(id) => onDeleteTodo(id)}
           />
         );
       })}
