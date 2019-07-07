@@ -58,16 +58,16 @@ const TodoItem = ({
   const itemCount = idx + 1 + ". ";
 
   return (
-    <div
-      onClick={handleClick}
-      onDoubleClick={handleDoubleClick}
-      className={`TodoItem TodoItem${status === "Done" ? "Done" : "Active"}`}
-    >
-      <div style={{ marginLeft: 10, marginRight: 10, width: 50 }}>
+    <div className={`TodoItem TodoItem${status === "Done" ? "Done" : "Active"}`}>
+      <div style={{ marginLeft: '1rem', width: '2rem' }}>
         {itemCount}
       </div>
       {renderIcon()}
-      <div className="InnerTodoContainer">
+      <div 
+        onClick={handleClick}
+        onDoubleClick={handleDoubleClick}
+        className="InnerTodoContainer"
+      >
         {isEditing ? (
           <input
             autoFocus
