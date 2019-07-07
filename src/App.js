@@ -93,7 +93,9 @@ function App() {
 
   const save = list => {
     const todos = list.sort((a, b) => {
-      return new Date(a.createdAt) - new Date(b.createdAt);
+      return (
+        new Date(a.createdAt) - new Date(b.createdAt)
+      );
     });
     setTodoList(todos);
     setAllTodoItems(todos);
