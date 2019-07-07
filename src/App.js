@@ -48,6 +48,13 @@ function App() {
           ...doc.data()
         });
       });
+      console.log('todos', todos)
+      todos = todos.sort((a, b) => {
+        return (
+          new Date(a.createdAt) - new Date(b.createdAt)
+        );
+      });
+      console.log('todos', todos)
       save(todos);
     };
 
