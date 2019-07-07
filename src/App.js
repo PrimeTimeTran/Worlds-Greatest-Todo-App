@@ -48,12 +48,15 @@ function App() {
           todos.push(doc.data());
         }
       });
-      todos = todos.sort((a, b) => {
-        return (
-          new Date(b.createdAt.nanoseconds) - new Date(a.createdAt.nanoseconds)
-        );
-      });
-      save(todos);
+
+      // Uncomment to get live updates from mobile app
+      // 
+      // todos = todos.sort((a, b) => {
+      //   return (
+      //     new Date(b.createdAt.nanoseconds) - new Date(a.createdAt.nanoseconds)
+      //   );
+      // });
+      // save(todos);
     };
 
     const setupApp = () => {
@@ -162,7 +165,6 @@ function App() {
     if (idx !== undefined) {
       editTodo(idx, body);
     } else {
-      console.log('createing new')
       createNewTodo(body);
     }
   };
@@ -252,8 +254,6 @@ function App() {
       });
   };
 
-  console.log('tododod', todoList)
-
   return (
     <div className="App" style={bgImage}>
       <Navigation
@@ -283,7 +283,7 @@ function App() {
         currentUser={currentUser}
         submitEditTodo={submitTodo}
         onDeleteTodo={onDeleteTodo}
-        onToggleTodo={id => onToggleTodo(id)}
+        onToggleTodo={onToggleTodo}
       />
       <Footer />
     </div>
