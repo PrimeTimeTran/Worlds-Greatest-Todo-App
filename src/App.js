@@ -48,13 +48,6 @@ function App() {
           ...doc.data()
         });
       });
-      console.log('todos', todos)
-      todos = todos.sort((a, b) => {
-        return (
-          new Date(a.createdAt) - new Date(b.createdAt)
-        );
-      });
-      console.log('todos', todos)
       save(todos);
     };
 
@@ -71,7 +64,7 @@ function App() {
             .where("uid", "==", user.uid)
             .orderBy("createdAt", "desc");
 
-          const todos = [];
+          let todos = [];
 
           query
             .get()
@@ -100,12 +93,10 @@ function App() {
 
   const save = list => {
     const todos = list.sort((a, b) => {
-      return (
-        new Date(b.createdAt.nanoseconds) - new Date(a.createdAt.nanoseconds)
-      );
+      return new Date(a.createdAt) - new Date(b.createdAt);
     });
-    setAllTodoItems(todos);
     setTodoList(todos);
+    setAllTodoItems(todos);
   };
 
   const onSignIn = () => {
@@ -159,9 +150,9 @@ function App() {
       );
   };
 
-  const submitTodo = (body, idx) => {
-    if (idx !== undefined) {
-      editTodo(idx, body);
+  const submitTodo = (body, id) => {
+    if (id !== undefined) {
+      editTodo(id, body);
     } else {
       createNewTodo(body);
     }
@@ -194,19 +185,18 @@ function App() {
   };
 
   const saveToFireStore = id => {
-    const db = firebase.firestore();
+    const db = firebase.firestore().collection("todos");
+
     let jsonTodo;
-    if (typeof id === "string") {
+    const isUpdatingTodo = typeof id === "string";
+
+    if (isUpdatingTodo) {
       const newTodo = todoList.find(todo => todo.id === id);
       jsonTodo = JSON.parse(JSON.stringify(newTodo));
-      db.collection("todos")
-        .doc(id)
-        .set(jsonTodo);
+      db.doc(id).set(jsonTodo);
     } else {
       jsonTodo = JSON.parse(JSON.stringify(id));
-      db.collection("todos")
-        .doc()
-        .set(jsonTodo);
+      db.doc().set(jsonTodo);
     }
   };
 
@@ -215,7 +205,7 @@ function App() {
   };
 
   const onToggleTodo = id => {
-    let newTodo = todoList.find(todo => todo.id === id);
+    const newTodo = todoList.find(todo => todo.id === id);
 
     if (newTodo.status === "Done") {
       newTodo.status = "Active";
@@ -224,7 +214,7 @@ function App() {
     }
 
     const foundIndex = todoList.findIndex(todo => todo.id === id);
-    let newTodoList = [...todoList];
+    const newTodoList = [...todoList];
     newTodoList[foundIndex] = newTodo;
     save(newTodoList);
     saveToFireStore(id);
@@ -238,10 +228,8 @@ function App() {
   };
 
   const onDeleteTodo = id => {
-    const db = firebase.firestore();
-    const todoRef = db.collection("todos");
-    todoRef
-      .doc(id)
+    const db = firebase.firestore().collection("todos");
+    db.doc(id)
       .delete()
       .then(() => {
         const newTodoList = todoList.filter(todo => todo.id !== id);
