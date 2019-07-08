@@ -93,9 +93,7 @@ function App() {
 
   const save = list => {
     const todos = list.sort((a, b) => {
-      return (
-        new Date(a.createdAt) - new Date(b.createdAt)
-      );
+      return new Date(a.createdAt) - new Date(b.createdAt);
     });
     setTodoList(todos);
     setAllTodoItems(todos);
@@ -270,8 +268,8 @@ function App() {
         keyPress={keyPress}
         currentUser={currentUser}
         submitEditTodo={submitTodo}
-        onDeleteTodo={id => onDeleteTodo(id)}
         onToggleTodo={onToggleTodo}
+        onDeleteTodo={id => onDeleteTodo(id)}
       />
       <Footer />
     </div>
