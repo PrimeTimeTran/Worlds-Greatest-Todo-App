@@ -1,23 +1,23 @@
 import React from "react";
 
-const TodoInput = (props) => {
+const TodoInput = ({ keyPress, newTodoBody, currentUser, setNewTodoItem }) => {
   return (
     <div>
       <h1 className="Prompt Prompt-Title">Todo List</h1>
       <input
         autoFocus
-        value={props.newTodoBody}
-        onKeyDown={props.keyPress}
+        value={newTodoBody}
+        onKeyDown={keyPress}
         className="NewTodoInput"
         placeholder={`Enter todo here ${
-          props.currentUser.email !== undefined ? props.currentUser.email : ""
+          currentUser.email !== undefined ? currentUser.email : ""
         }`}
         onChange={e => {
-          props.setNewTodoItem(e.target.value);
+          setNewTodoItem(e.target.value);
         }}
       />
     </div>
-  )
-}
+  );
+};
 
-export default TodoInput
+export default TodoInput;

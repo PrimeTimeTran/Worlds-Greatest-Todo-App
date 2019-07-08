@@ -194,3 +194,7 @@ a {
   color: pink;
 }
 
+.ItemCount {
+  width: 2rem;
+  margin-left: 1rem;
+}

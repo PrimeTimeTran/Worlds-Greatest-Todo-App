@@ -17,9 +17,7 @@ const TodoItem = ({
   let delay = 200;
   let prevent = false;
   
-  const doDoubleClickAction = () => {
-    setIsEditing(true);
-  };
+  const doDoubleClickAction = () => setIsEditing(true);
 
   const handleClick = () => {
     timer = setTimeout(() => {
@@ -59,14 +57,14 @@ const TodoItem = ({
 
   return (
     <div className={`TodoItem TodoItem${status === "Done" ? "Done" : "Active"}`}>
-      <div style={{ marginLeft: '1rem', width: '2rem' }}>
+      <div className="ItemCount">
         {itemCount}
       </div>
       {renderIcon()}
       <div 
         onClick={handleClick}
-        onDoubleClick={handleDoubleClick}
         className="InnerTodoContainer"
+        onDoubleClick={handleDoubleClick}
       >
         {isEditing ? (
           <input

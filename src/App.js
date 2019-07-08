@@ -64,7 +64,7 @@ function App() {
             .where("uid", "==", user.uid)
             .orderBy("createdAt", "desc");
 
-          let todos = [];
+          const todos = [];
 
           query
             .get()
@@ -151,11 +151,8 @@ function App() {
   };
 
   const submitTodo = (body, id) => {
-    if (id !== undefined) {
-      editTodo(id, body);
-    } else {
-      createNewTodo(body);
-    }
+    const isEditing = id !== undefined
+    isEditing ? editTodo(id, body) : createNewTodo(body);
   };
 
   const createNewTodo = body => {
@@ -165,9 +162,11 @@ function App() {
       uid: currentUser.uid,
       createdAt: new Date()
     };
+
     const newTodoList = [...todoList, newTodo];
-    setNewTodoItem("");
+
     save(newTodoList);
+    setNewTodoItem("");
     saveToFireStore(newTodo);
     setBgImage({
       backgroundImage: `url(${randomBackgroundImage()})`
@@ -176,11 +175,12 @@ function App() {
 
   const editTodo = (id, body) => {
     const updatedTodo = todoList.find(todo => todo.id === id);
-    updatedTodo.body = body;
     const foundIndex = todoList.findIndex(todo => todo.id === id);
+
+    updatedTodo.body = body;
     todoList[foundIndex] = updatedTodo;
-    const newTodoList = [...todoList];
-    save(newTodoList);
+
+    save(todoList);
     saveToFireStore(id);
   };
 
@@ -206,25 +206,20 @@ function App() {
 
   const onToggleTodo = id => {
     const newTodo = todoList.find(todo => todo.id === id);
-
-    if (newTodo.status === "Done") {
-      newTodo.status = "Active";
-    } else {
-      newTodo.status = "Done";
-    }
-
     const foundIndex = todoList.findIndex(todo => todo.id === id);
-    const newTodoList = [...todoList];
-    newTodoList[foundIndex] = newTodo;
-    save(newTodoList);
+
+    newTodo.status = newTodo.status === "Done" ? "Active" : "Done";
+    todoList[foundIndex] = newTodo;
+
+    save(todoList);
     saveToFireStore(id);
   };
 
   const setNewFilter = type => {
     setFilter(type);
     if (type === null) return setTodoList(allTodoItems);
-    const filteredTodoList = allTodoItems.filter(todo => todo.status === type);
-    setTodoList(filteredTodoList);
+    const todos = allTodoItems.filter(todo => todo.status === type);
+    setTodoList(todos);
   };
 
   const onDeleteTodo = id => {
@@ -265,7 +260,6 @@ function App() {
       <TodoList
         loading={loading}
         todoList={todoList}
-        keyPress={keyPress}
         currentUser={currentUser}
         submitEditTodo={submitTodo}
         onToggleTodo={onToggleTodo}
