@@ -4,7 +4,7 @@ import { FaSignOutAlt } from 'react-icons/fa';
 
 import SignInForm from "./SignInForm";
 
-const Navigation = ({
+const Navbar = ({
   email,
   password,
   onSignIn,
@@ -14,7 +14,7 @@ const Navigation = ({
   currentUser,
 }) => {
   return (
-    <div className="Navigation">
+    <div className="Navbar">
       {currentUser.uid !== "" ? (
         <button className="Btn Btn-Signout" onClick={onSignOut}>
           <FaSignOutAlt style={{ marginRight: 10 }} />
@@ -33,4 +33,4 @@ const Navigation = ({
   )
 }
 
-export default Navigation
+export default Navbar

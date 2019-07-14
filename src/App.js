@@ -6,7 +6,7 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import Footer from "./components/Footer";
 import TodoList from "./components/TodoList";
 import TodoInput from "./components/TodoInput";
-import Navigation from "./components/Navigation";
+import Navbar from "./components/Navbar";
 import SortingOptions from "./components/SortingOptions";
 
 import { randomBackgroundImage } from "./utils";
@@ -160,7 +160,7 @@ function App() {
       body: body,
       status: "Active",
       uid: currentUser.uid,
-      createdAt: new Date()
+      createdAt: new Date().toUTCString()
     };
 
     const newTodoList = [...todoList, newTodo];
@@ -237,7 +237,7 @@ function App() {
 
   return (
     <div className="App" style={bgImage}>
-      <Navigation
+      <Navbar
         email={email}
         password={password}
         onSignIn={onSignIn}
