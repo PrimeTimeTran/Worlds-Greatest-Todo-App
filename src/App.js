@@ -35,60 +35,69 @@ function App() {
   const [allTodoItems, setAllTodoItems] = useState([]);
   const ref = useRef(firebase.firestore().collection("todos"));
   const [currentUser, setCurrentUser] = useState({ uid: "", email: "" });
+  let userRef = useRef(currentUser);
   const [bgImage, setBgImage] = useState({
     backgroundImage: `url(${randomBackgroundImage()})`
   });
 
-  useEffect(() => {
-    const onCollectionUpdate = querySnapshot => {
-      let todos = [];
-      querySnapshot.forEach(doc => {
+  const setupApp = () => {
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        setCurrentUser({
+          uid: user.uid,
+          email: user.email
+        });
+        userRef.current = {
+          uid: user.uid,
+          email: user.email
+        }
+        const db = firebase.firestore();
+        const todosRef = db.collection("todos");
+        const query = todosRef
+          .where("uid", "==", user.uid)
+          .orderBy("createdAt", "desc");
+
+        const todos = [];
+
+        query
+          .get()
+          .then(querySnapshot => {
+            querySnapshot.forEach(doc => {
+              const todo = {
+                ...doc.data(),
+                id: doc.id
+              };
+              todos.push(todo);
+            });
+            save(todos);
+            ref.current.onSnapshot(onCollectionUpdate);
+          })
+          .catch(error => {
+            console.log("Error getting document:", error);
+          });
+      } else {
+        setCurrentUser({ uid: "" });
+      }
+      setLoading(false);
+    });
+  };
+
+  const onCollectionUpdate = querySnapshot => {
+    let todos = [];
+    querySnapshot.forEach(doc => {
+      if (doc.data().uid === userRef.current.uid) {
         todos.push({
           id: doc.id,
           ...doc.data()
         });
-      });
-      save(todos);
-    };
+      }
+    });
+    save(todos);
+  };
 
-    const setupApp = () => {
-      firebase.auth().onAuthStateChanged(user => {
-        if (user) {
-          setCurrentUser({
-            uid: user.uid,
-            email: user.email
-          });
-          const db = firebase.firestore();
-          const todosRef = db.collection("todos");
-          const query = todosRef
-            .where("uid", "==", user.uid)
-            .orderBy("createdAt", "desc");
-
-          const todos = [];
-
-          query
-            .get()
-            .then(querySnapshot => {
-              querySnapshot.forEach(doc => {
-                const todo = {
-                  ...doc.data(),
-                  id: doc.id
-                };
-                todos.push(todo);
-              });
-              save(todos);
-            })
-            .catch(error => {
-              console.log("Error getting document:", error);
-            });
-        } else {
-          setCurrentUser({ uid: "" });
-        }
-        setLoading(false);
-      });
-    };
+  useEffect(() => {
     setupApp();
-    ref.current.onSnapshot(onCollectionUpdate);
+    
   }, []);
 
   const save = list => {
@@ -151,7 +160,7 @@ function App() {
   };
 
   const submitTodo = (body, id) => {
-    const isEditing = id !== undefined
+    const isEditing = id !== undefined;
     isEditing ? editTodo(id, body) : createNewTodo(body);
   };
 
@@ -163,9 +172,6 @@ function App() {
       createdAt: new Date().toUTCString()
     };
 
-    const newTodoList = [...todoList, newTodo];
-
-    save(newTodoList);
     setNewTodoItem("");
     saveToFireStore(newTodo);
     setBgImage({
