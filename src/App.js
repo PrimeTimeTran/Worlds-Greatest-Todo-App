@@ -16,7 +16,6 @@ import { randomBackgroundImage } from "./utils";
 
 import "./App.css";
 
-
 const firebaseConfig = {
   storageBucket: "",
   appId: process.env.REACT_APP_APP_ID,
