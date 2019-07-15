@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 
 import firebase from "firebase";
+import ReactGA from 'react-ga';
+
+
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
 import Footer from "./components/Footer";
@@ -13,6 +16,7 @@ import { randomBackgroundImage } from "./utils";
 
 import "./App.css";
 
+
 const firebaseConfig = {
   storageBucket: "",
   appId: process.env.REACT_APP_APP_ID,
@@ -22,6 +26,15 @@ const firebaseConfig = {
   databaseURL: process.env.REACT_APP_DATABASE_URL,
   messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID
 };
+
+console.log('process.env.REACT_APP_APP_ID', process.env.REACT_APP_GA_ID)
+
+ReactGA.initialize(process.env.REACT_APP_GA_ID);
+
+ReactGA.event({
+  category: 'App',
+  action: 'Open'
+});
 
 firebase.initializeApp(firebaseConfig);
 
@@ -104,6 +117,12 @@ function App() {
           uid: user.uid,
           email: user.user.email
         });
+        ReactGA.event({
+          uid: user.uid,
+          category: 'App',
+          action: 'Sign in',
+          email: user.user.email
+        });
       })
       .catch(error => {
         console.log("Account not found, creating a new one!");
@@ -120,6 +139,12 @@ function App() {
           uid: user.uid,
           email: user.user.email
         });
+        ReactGA.event({
+          uid: user.uid,
+          category: 'App',
+          email: user.user.email,
+          action: 'Create Account',
+        });
       })
       .catch(error => {
         console.log("Failed to create new account!");
@@ -133,6 +158,10 @@ function App() {
       .then(
         () => {
           console.log("Signed Out");
+          ReactGA.event({
+            category: 'App',
+            action: 'Signout',
+          });
           setCurrentUser({ uid: "" });
           save([]);
         },
@@ -148,6 +177,12 @@ function App() {
   };
 
   const createNewTodo = body => {
+    ReactGA.event({
+      body,
+      category: 'Todo',
+      action: 'Create',
+      uid: currentUser.uid
+    });
     const newTodo = {
       body: body,
       status: "Active",
@@ -168,6 +203,14 @@ function App() {
 
     updatedTodo.body = body;
     todos[foundIndex] = updatedTodo;
+
+    ReactGA.event({
+      body,
+      todoId: id,
+      category: 'Todo',
+      action: 'Edit',
+      uid: currentUser.uid
+    })
 
     saveToFireStore(id);
   };
@@ -198,7 +241,12 @@ function App() {
 
     newTodo.status = newTodo.status === "Done" ? "Active" : "Done";
     todos[foundIndex] = newTodo;
-
+    ReactGA.event({
+      todoId: id,
+      category: 'Todo',
+      action: 'Toggle',
+      uid: currentUser.uid,
+    });
     saveToFireStore(id);
   };
 
@@ -211,6 +259,12 @@ function App() {
 
   const onDeleteTodo = id => {
     const db = firebase.firestore().collection("todos");
+    ReactGA.event({
+      todoId: id,
+      category: 'Todo',
+      action: 'Delete',
+      uid: currentUser.uid,
+    });
     db.doc(id)
       .delete()
       .then()
