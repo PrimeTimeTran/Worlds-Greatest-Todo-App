@@ -4,8 +4,8 @@ import TodoItem from "./TodoItem";
 import TodoPrompt from "./TodoPrompt";
 
 const TodoList = ({
+  todos,
   loading,
-  todoList,
   currentUser,
   onToggleTodo,
   onDeleteTodo,
@@ -15,10 +15,10 @@ const TodoList = ({
     <div className="TodoContainer">
       {loading && <div className="loader" />}
       <TodoPrompt 
-        todoList={todoList}
+        todoList={todos}
         currentUser={currentUser}
       />
-      {todoList.map((todo, idx) => {
+      {todos.map((todo, idx) => {
         return (
           <TodoItem
             idx={idx}

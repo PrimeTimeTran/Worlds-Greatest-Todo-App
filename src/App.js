@@ -4,9 +4,9 @@ import firebase from "firebase";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
 import Footer from "./components/Footer";
+import Navbar from "./components/Navbar";
 import TodoList from "./components/TodoList";
 import TodoInput from "./components/TodoInput";
-import Navbar from "./components/Navbar";
 import SortingOptions from "./components/SortingOptions";
 
 import { randomBackgroundImage } from "./utils";
@@ -26,11 +26,9 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 function App() {
-  const [email, setEmail] = useState("");
   const [filter, setFilter] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [password, setPassword] = useState("");
-  const [todoList, setTodoList] = useState([]);
+  const [todos, setTodos] = useState([]);
   const [newTodoBody, setNewTodoItem] = useState("");
   const [allTodoItems, setAllTodoItems] = useState([]);
   const ref = useRef(firebase.firestore().collection("todos"));
@@ -39,6 +37,20 @@ function App() {
   const [bgImage, setBgImage] = useState({
     backgroundImage: `url(${randomBackgroundImage()})`
   });
+
+  const refreshTodos = querySnapshot => {
+    const todos = [];
+    querySnapshot.forEach(doc => {
+      const isCurrentUserTodo = doc.data().uid === userRef.current.uid;
+      if (isCurrentUserTodo) {
+        todos.push({
+          id: doc.id,
+          ...doc.data()
+        });
+      }
+    });
+    save(todos);
+  };
 
   const setupApp = () => {
     firebase.auth().onAuthStateChanged(user => {
@@ -50,28 +62,16 @@ function App() {
         userRef.current = {
           uid: user.uid,
           email: user.email
-        }
+        };
         const db = firebase.firestore();
         const todosRef = db.collection("todos");
         const query = todosRef
           .where("uid", "==", user.uid)
           .orderBy("createdAt", "desc");
 
-        const todos = [];
-
         query
           .get()
-          .then(querySnapshot => {
-            querySnapshot.forEach(doc => {
-              const todo = {
-                ...doc.data(),
-                id: doc.id
-              };
-              todos.push(todo);
-            });
-            save(todos);
-            ref.current.onSnapshot(onCollectionUpdate);
-          })
+          .then(refreshTodos)
           .catch(error => {
             console.log("Error getting document:", error);
           });
@@ -80,35 +80,22 @@ function App() {
       }
       setLoading(false);
     });
-  };
-
-  const onCollectionUpdate = querySnapshot => {
-    let todos = [];
-    querySnapshot.forEach(doc => {
-      if (doc.data().uid === userRef.current.uid) {
-        todos.push({
-          id: doc.id,
-          ...doc.data()
-        });
-      }
-    });
-    save(todos);
+    ref.current.onSnapshot(refreshTodos);
   };
 
   useEffect(() => {
     setupApp();
-    
   }, []);
 
   const save = list => {
     const todos = list.sort((a, b) => {
       return new Date(a.createdAt) - new Date(b.createdAt);
     });
-    setTodoList(todos);
+    setTodos(todos);
     setAllTodoItems(todos);
   };
 
-  const onSignIn = () => {
+  const onSignIn = (email, password) => {
     firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
@@ -117,16 +104,14 @@ function App() {
           uid: user.uid,
           email: user.user.email
         });
-        setPassword("");
-        setEmail("");
       })
       .catch(error => {
         console.log("Account not found, creating a new one!");
-        createUserAccount();
+        createUserAccount(email, password);
       });
   };
 
-  const createUserAccount = () => {
+  const createUserAccount = (email, password) => {
     firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
@@ -135,8 +120,6 @@ function App() {
           uid: user.uid,
           email: user.user.email
         });
-        setPassword("");
-        setEmail("");
       })
       .catch(error => {
         console.log("Failed to create new account!");
@@ -180,13 +163,12 @@ function App() {
   };
 
   const editTodo = (id, body) => {
-    const updatedTodo = todoList.find(todo => todo.id === id);
-    const foundIndex = todoList.findIndex(todo => todo.id === id);
+    const updatedTodo = todos.find(todo => todo.id === id);
+    const foundIndex = todos.findIndex(todo => todo.id === id);
 
     updatedTodo.body = body;
-    todoList[foundIndex] = updatedTodo;
+    todos[foundIndex] = updatedTodo;
 
-    save(todoList);
     saveToFireStore(id);
   };
 
@@ -197,7 +179,7 @@ function App() {
     const isUpdatingTodo = typeof id === "string";
 
     if (isUpdatingTodo) {
-      const newTodo = todoList.find(todo => todo.id === id);
+      const newTodo = todos.find(todo => todo.id === id);
       jsonTodo = JSON.parse(JSON.stringify(newTodo));
       db.doc(id).set(jsonTodo);
     } else {
@@ -211,31 +193,27 @@ function App() {
   };
 
   const onToggleTodo = id => {
-    const newTodo = todoList.find(todo => todo.id === id);
-    const foundIndex = todoList.findIndex(todo => todo.id === id);
+    const newTodo = todos.find(todo => todo.id === id);
+    const foundIndex = todos.findIndex(todo => todo.id === id);
 
     newTodo.status = newTodo.status === "Done" ? "Active" : "Done";
-    todoList[foundIndex] = newTodo;
+    todos[foundIndex] = newTodo;
 
-    save(todoList);
     saveToFireStore(id);
   };
 
   const setNewFilter = type => {
     setFilter(type);
-    if (type === null) return setTodoList(allTodoItems);
+    if (type === null) return setTodos(allTodoItems);
     const todos = allTodoItems.filter(todo => todo.status === type);
-    setTodoList(todos);
+    setTodos(todos);
   };
 
   const onDeleteTodo = id => {
     const db = firebase.firestore().collection("todos");
     db.doc(id)
       .delete()
-      .then(() => {
-        const newTodoList = todoList.filter(todo => todo.id !== id);
-        save(newTodoList);
-      })
+      .then()
       .catch(error => {
         console.error("Error removing document: ", error);
       });
@@ -244,12 +222,8 @@ function App() {
   return (
     <div className="App" style={bgImage}>
       <Navbar
-        email={email}
-        password={password}
         onSignIn={onSignIn}
-        setEmail={setEmail}
         onSignOut={onSignOut}
-        setPassword={setPassword}
         currentUser={currentUser}
       />
       <TodoInput
@@ -264,8 +238,8 @@ function App() {
         setNewFilter={setNewFilter}
       />
       <TodoList
+        todos={todos}
         loading={loading}
-        todoList={todoList}
         currentUser={currentUser}
         submitEditTodo={submitTodo}
         onToggleTodo={onToggleTodo}
