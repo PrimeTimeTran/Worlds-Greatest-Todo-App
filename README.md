@@ -8,9 +8,9 @@
 
 #### Replace with your name and favorites!
 
-	> “I, Loi Tran, on July 17th 2019 promise to one day contribute something meaningful to this open source application. I will help make the "Worlds greatest todo app."
+    > “I, AnKhuong Huynh, on July 17th 2019 promise to one day contribute something meaningful to this open source application. I will help make the "Worlds greatest todo app."
 
-
+Budda Adele Red Aries
 
 These emojis came from El Captain
 💪🙌👌
