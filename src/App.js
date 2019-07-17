@@ -3,7 +3,6 @@ import React, { useState, useEffect, useRef } from "react";
 import firebase from "firebase";
 import ReactGA from 'react-ga';
 
-
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
 import Footer from "./components/Footer";
@@ -25,8 +24,6 @@ const firebaseConfig = {
   databaseURL: process.env.REACT_APP_DATABASE_URL,
   messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID
 };
-
-console.log('process.env.REACT_APP_APP_ID', process.env.REACT_APP_GA_ID)
 
 ReactGA.initialize(process.env.REACT_APP_GA_ID);
 

@@ -1,11 +1,18 @@
-# React Native Todo with Firebase
+# 1.3 Git instructions
 
-## [Demo](https://todolistwithfirebase.netlify.com/)
+1. **git clone** Worlds greatest todo app
+2. **cd** into the folder
+3. **git checkout ‘promise/loitran’**
+4. Open code editor
+5. Inside of `./src/components/Footer.js` Add a comment to the very bottom.
 
-![Walkthrough](./intro.gif)
+#### Replace with your name and favorites!
 
-## [Youtube walkthrough web pt 1](https://youtu.be/j-DQcHJg49k)
+	> “I, Loi Tran, on July 17th 2019 promise to one day contribute something meaningful to this open source application. I will help make the "Worlds greatest todo app."
 
-## [Youtube walkthrough web & simulator pt 2](https://youtu.be/74FIy-inRqE)
 
-## [Youtube walkthrough web, simulator, & device pt 3](https://www.youtube.com/watch?v=4fI5W7M2yBU)
+
+These emojis came from El Captain
+💪🙌👌
+
+#### Mai, Shawn, Khuong
