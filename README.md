@@ -8,8 +8,13 @@
 
 #### Replace with your name and favorites!
 
-	> “I, Loi Tran, on July 17th 2019 promise to one day contribute something meaningful to this open source application. I will help make the "Worlds greatest todo app."
+	> “I, Phuong Tran, on July 17th 2019 promise to one day contribute something meaningful to this open source application. I will help make the "Worlds greatest todo app."
 
+
+Captain America
+Blue
+Chris Young
+Leo
 
 
 These emojis came from El Captain
