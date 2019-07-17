@@ -8,7 +8,13 @@
 
 #### Replace with your name and favorites!
 
-	> “I, Loi Tran, on July 17th 2019 promise to one day contribute something meaningful to this open source application. I will help make the "Worlds greatest todo app."
+	> “I, Shawn Talvacchia, on July 17th 2019 promise to one day contribute something "meaningful" to this open source application. I will help make the "Worlds greatest todo app."
+
+Spider Man (recent movie was pretty good)
+All the colors 
+Cancer
+Something I can dance too ;)
+
 
 
 
