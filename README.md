@@ -15,4 +15,4 @@ Deepak Chopra Red 2pac Pisces
 These emojis came from El Captain
 💪🙌👌
 
-#### Mai, Shawn, Khuong
+####Mai, Shawn, Khuong

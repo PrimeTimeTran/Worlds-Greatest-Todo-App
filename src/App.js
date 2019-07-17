@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 
+import ReactGA from "react-ga";
 import firebase from "firebase";
-import ReactGA from 'react-ga';
 
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
@@ -15,6 +15,12 @@ import { randomBackgroundImage } from "./utils";
 
 import "./App.css";
 
+ReactGA.initialize(process.env.REACT_APP_GA_ID);
+ReactGA.event({
+  category: "App",
+  action: "Page view"
+});
+
 const firebaseConfig = {
   storageBucket: "",
   appId: process.env.REACT_APP_APP_ID,
@@ -24,14 +30,6 @@ const firebaseConfig = {
   databaseURL: process.env.REACT_APP_DATABASE_URL,
   messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID
 };
-
-ReactGA.initialize(process.env.REACT_APP_GA_ID);
-
-ReactGA.event({
-  category: 'App',
-  action: 'Open'
-});
-
 firebase.initializeApp(firebaseConfig);
 
 function App() {
@@ -113,11 +111,12 @@ function App() {
           uid: user.uid,
           email: user.user.email
         });
+
         ReactGA.event({
           uid: user.uid,
-          category: 'App',
-          action: 'Sign in',
-          email: user.user.email
+          category: "User",
+          action: "Signed in",
+          label: user.user.uid
         });
       })
       .catch(error => {
@@ -136,10 +135,9 @@ function App() {
           email: user.user.email
         });
         ReactGA.event({
-          uid: user.uid,
-          category: 'App',
+          category: "User",
           email: user.user.email,
-          action: 'Create Account',
+          action: "Created an account"
         });
       })
       .catch(error => {
@@ -150,13 +148,13 @@ function App() {
   const onSignOut = () => {
     firebase
       .auth()
-      .signOut()
+      .signOut()  
       .then(
         () => {
           console.log("Signed Out");
           ReactGA.event({
-            category: 'App',
-            action: 'Signout',
+            category: "User",
+            action: "Signed out"
           });
           setCurrentUser({ uid: "" });
           save([]);
@@ -174,10 +172,8 @@ function App() {
 
   const createNewTodo = body => {
     ReactGA.event({
-      body,
-      category: 'Todo',
-      action: 'Create',
-      uid: currentUser.uid
+      category: "User",
+      action: "Created a todo",
     });
     const newTodo = {
       body: body,
@@ -201,12 +197,10 @@ function App() {
     todos[foundIndex] = updatedTodo;
 
     ReactGA.event({
-      body,
-      todoId: id,
-      category: 'Todo',
-      action: 'Edit',
-      uid: currentUser.uid
-    })
+      value: id,
+      category: "User",
+      action: "Edited a todo",
+    });
 
     saveToFireStore(id);
   };
@@ -238,10 +232,9 @@ function App() {
     newTodo.status = newTodo.status === "Done" ? "Active" : "Done";
     todos[foundIndex] = newTodo;
     ReactGA.event({
-      todoId: id,
-      category: 'Todo',
-      action: 'Toggle',
-      uid: currentUser.uid,
+      value: id,
+      category: "User",
+      action: "Edited a todo",
     });
     saveToFireStore(id);
   };
@@ -256,10 +249,9 @@ function App() {
   const onDeleteTodo = id => {
     const db = firebase.firestore().collection("todos");
     ReactGA.event({
-      todoId: id,
-      category: 'Todo',
-      action: 'Delete',
-      uid: currentUser.uid,
+      value: id,
+      category: "User",
+      action: "Deleted a todo",
     });
     db.doc(id)
       .delete()
@@ -300,10 +292,10 @@ function App() {
   );
 }
 
-const RoutedApp = () => (
+const Routes = () => (
   <Router>
     <Route path="/" component={App} />
   </Router>
 );
 
-export default RoutedApp;
+export default Routes;
