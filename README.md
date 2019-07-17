@@ -8,9 +8,12 @@
 
 #### Replace with your name and favorites!
 
-	> “I, Loi Tran, on July 17th 2019 promise to one day contribute something meaningful to this open source application. I will help make the "Worlds greatest todo app."
+	> “I, Hang Tran, on July 17th 2019 promise to one day contribute something meaningful to this open source application. I will help make the "Worlds greatest todo app."
 
-
+Superman
+Gray
+Maroon 5
+Sagittarus
 
 These emojis came from El Captain
 💪🙌👌
