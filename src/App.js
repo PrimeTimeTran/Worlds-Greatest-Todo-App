@@ -21,6 +21,8 @@ ReactGA.event({
   action: "Page view"
 });
 
+ReactGA.ga('send', 'pageview', '/');
+
 const firebaseConfig = {
   storageBucket: "",
   appId: process.env.REACT_APP_APP_ID,
@@ -80,6 +82,10 @@ function App() {
           .get()
           .then(refreshTodos)
           .catch(error => {
+            ReactGA.exception({
+              fatal: true,
+              description: 'An error ocurred fetching todos'
+            });
             console.log("Error getting document:", error);
           });
       } else {
@@ -122,6 +128,10 @@ function App() {
       .catch(error => {
         console.log("Account not found, creating a new one!");
         createUserAccount(email, password);
+        ReactGA.exception({
+          fatal: true,
+          description: 'Account not found'
+        });
       });
   };
 
@@ -141,6 +151,10 @@ function App() {
         });
       })
       .catch(error => {
+        ReactGA.exception({
+          fatal: true,
+          description: 'Failed to create account'
+        });
         console.log("Failed to create new account!");
       });
   };
@@ -161,6 +175,10 @@ function App() {
         },
         error => {
           console.error("Sign Out Error", error);
+          ReactGA.exception({
+            fatal: true,
+            description: 'An error ocurred signing out'
+          });
         }
       );
   };
@@ -213,10 +231,10 @@ function App() {
 
     if (isUpdatingTodo) {
       const newTodo = todos.find(todo => todo.id === id);
-      jsonTodo = JSON.parse(JSON.stringify(newTodo));
+      jsonTodo = JSON.stringify(newTodo);
       db.doc(id).set(jsonTodo);
     } else {
-      jsonTodo = JSON.parse(JSON.stringify(id));
+      jsonTodo = JSON.stringify(id);
       db.doc().set(jsonTodo);
     }
   };
@@ -258,6 +276,10 @@ function App() {
       .then()
       .catch(error => {
         console.error("Error removing document: ", error);
+        ReactGA.exception({
+          fatal: true,
+          description: 'An error ocurred deleting a'
+        });
       });
   };
 

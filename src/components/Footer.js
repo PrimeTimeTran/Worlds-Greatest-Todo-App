@@ -27,8 +27,7 @@ const Footer = ({ children }) => {
       <div style={phantom} />
       <div style={style}>
         <h4>
-          Built with ️❤️ by{" "}
-          <a href="https://github.com/PrimeTimeTran/r-TodoList">PrimeTimeTran</a>
+          <a href="https://github.com/PrimeTimeTran/Worlds-greatest-todo-app">World's Greatest Todo List</a>
         </h4>
       </div>
     </div>
