@@ -231,11 +231,10 @@ function App() {
 
     if (isUpdatingTodo) {
       const newTodo = todos.find(todo => todo.id === id);
-      jsonTodo = JSON.stringify(newTodo);
-      db.doc(id).set(jsonTodo);
+      db.doc(id).set(newTodo);
     } else {
-      jsonTodo = JSON.stringify(id);
-      db.doc().set(jsonTodo);
+      const newTodo = id
+      db.doc().set(newTodo);
     }
   };
 
