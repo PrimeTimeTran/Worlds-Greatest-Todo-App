@@ -11,7 +11,7 @@ const SortingOptions = ({ setNewFilter, allTodoItems, filter }) => {
   ).length;
 
   return (
-    <div className="SortingButtons">
+    <div className="sorting-buttons">
       <FilterButton
         prompt="All"
         focused={filter === null}

@@ -11,7 +11,8 @@
 }
 
 .Navbar {
-  width: 100vw;
+  width: 100%;
+  min-width: 100%;
   display: flex;
   min-height: 3rem;
   padding-top: 0.1rem;
@@ -31,7 +32,7 @@
   font-family: "Roboto", Times, serif;
 }
 
-.Prompt-Title {
+.prompt-title {
   font-size: 3rem;
   color: white;
 }
@@ -100,7 +101,7 @@ input, select, textarea {
   color: rgba(255, 255, 255, 0.714);
 }
 
-.SortingButtons {
+.sorting-buttons {
   width: 60rem;
   margin: 1rem;
   display: flex;
@@ -197,4 +198,50 @@ a {
 .ItemCount {
   width: 2rem;
   margin-left: 1rem;
+}
+
+@media only screen and (max-width: 600px) {
+  html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+  .prompt-title  {
+    font-size: 1.5em;
+    text-align: center;
+
+  }
+  .input-container {
+    width: 90em;
+  }
+  .NewTodoInput {
+    width: 90vw;
+    height: 2rem;
+  }
+
+  input, select, textarea {
+    color: white;
+    font-size: 1.5em;
+    font-weight: bold;
+    background-color: rgba(0, 0, 0, 0.6)
+  }
+
+  .sorting-buttons {
+    display: flex;
+    width: 99%;
+    align-items: center;
+    justify-content: center;
+  }
+  .Btn {
+    width: 28%;
+  }
+
+  .TodoContainer {
+    width: 90%;
+  }
+
+  ::placeholder {
+    opacity: 1;
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.714);
+  }
 }
