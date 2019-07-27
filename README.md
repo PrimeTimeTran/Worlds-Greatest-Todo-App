@@ -1,18 +1,9 @@
-# 1.3 Git instructions
+# React.js front end for the [Worlds Greatest Todo App](https://worldsgreatesttodoapp.com/)
 
-1. **git clone** Worlds greatest todo app
-2. **cd** into the folder
-3. **git checkout ‘promise/loitran’**
-4. Open code editor
-5. Inside of `./src/components/Footer.js` Add a comment to the very bottom.
+![Intro](./intro.gif)
 
-#### Replace with your name and favorites!
+## Setup
+<!-- Todo -->
 
-	> “I, Mai Hoang, on July 17th 2019 promise to one day contribute something meaningful to this open source application. I will help make the "Worlds greatest todo app."
-
-Deepak Chopra Red 2pac Pisces
-
-These emojis came from El Captain
-💪🙌👌
-
-####Mai, Shawn, Khuong
+## Todo
+[ ] Write a good README.md
