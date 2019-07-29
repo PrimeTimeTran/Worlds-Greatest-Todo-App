@@ -1,14 +1,10 @@
 import React, { useState } from "react";
 
-import { FaSignOutAlt } from 'react-icons/fa';
+import { FaSignOutAlt } from "react-icons/fa";
 
 import SignInForm from "./SignInForm";
 
-const Navbar = ({
-  onSignIn,
-  onSignOut,
-  currentUser,
-}) => {
+const Navbar = ({ onSignIn, onSignOut, currentUser }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -23,13 +19,13 @@ const Navbar = ({
         <SignInForm
           email={email}
           password={password}
-          onSignIn={() => onSignIn(email, password)}
           setEmail={setEmail}
           setPassword={setPassword}
+          onSignIn={() => onSignIn(email, password)}
         />
       )}
     </div>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;

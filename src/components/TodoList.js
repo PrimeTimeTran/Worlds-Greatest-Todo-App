@@ -14,10 +14,7 @@ const TodoList = ({
   return (
     <div className="TodoContainer">
       {loading && <div className="loader" />}
-      <TodoPrompt 
-        todoList={todos}
-        currentUser={currentUser}
-      />
+      <TodoPrompt todoList={todos} currentUser={currentUser} />
       {todos.map((todo, idx) => {
         return (
           <TodoItem

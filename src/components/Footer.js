@@ -18,7 +18,7 @@ var phantom = {
   width: "100%",
   height: "60px",
   padding: "20px",
-  display: "block",
+  display: "block"
 };
 
 const Footer = ({ children }) => {
@@ -27,15 +27,15 @@ const Footer = ({ children }) => {
       <div style={phantom} />
       <div style={style}>
         <h4>
-          <a href="https://github.com/PrimeTimeTran/Worlds-greatest-todo-app">World's Greatest Todo List</a>
+          <a href="https://github.com/PrimeTimeTran/Worlds-greatest-todo-app">
+            World's Greatest Todo List
+          </a>
         </h4>
       </div>
     </div>
   );
-}
+};
 
 export default Footer;
 
-
-
-// 
+//

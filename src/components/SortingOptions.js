@@ -20,13 +20,13 @@ const SortingOptions = ({ setNewFilter, allTodoItems, filter }) => {
       />
       <FilterButton
         prompt="Done"
-        focused={filter === 'Done'}
+        focused={filter === "Done"}
         count={doneTodoItemsCount}
         setNewFilter={() => setNewFilter("Done")}
       />
       <FilterButton
         prompt="Active"
-        focused={filter === 'Active'}
+        focused={filter === "Active"}
         count={activeTodoItemsCount}
         setNewFilter={() => setNewFilter("Active")}
       />

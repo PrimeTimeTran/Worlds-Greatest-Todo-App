@@ -21,7 +21,7 @@ ReactGA.event({
   action: "Page view"
 });
 
-ReactGA.ga('send', 'pageview', '/');
+ReactGA.ga("send", "pageview", "/");
 
 const firebaseConfig = {
   storageBucket: "",
@@ -32,6 +32,7 @@ const firebaseConfig = {
   databaseURL: process.env.REACT_APP_DATABASE_URL,
   messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID
 };
+
 firebase.initializeApp(firebaseConfig);
 
 function App() {
@@ -84,7 +85,7 @@ function App() {
           .catch(error => {
             ReactGA.exception({
               fatal: true,
-              description: 'An error ocurred fetching todos'
+              description: "An error ocurred fetching todos"
             });
             console.log("Error getting document:", error);
           });
@@ -130,7 +131,7 @@ function App() {
         createUserAccount(email, password);
         ReactGA.exception({
           fatal: true,
-          description: 'Account not found'
+          description: "Account not found"
         });
       });
   };
@@ -153,7 +154,7 @@ function App() {
       .catch(error => {
         ReactGA.exception({
           fatal: true,
-          description: 'Failed to create account'
+          description: "Failed to create account"
         });
         console.log("Failed to create new account!");
       });
@@ -162,7 +163,7 @@ function App() {
   const onSignOut = () => {
     firebase
       .auth()
-      .signOut()  
+      .signOut()
       .then(
         () => {
           console.log("Signed Out");
@@ -177,7 +178,7 @@ function App() {
           console.error("Sign Out Error", error);
           ReactGA.exception({
             fatal: true,
-            description: 'An error ocurred signing out'
+            description: "An error ocurred signing out"
           });
         }
       );
@@ -191,7 +192,7 @@ function App() {
   const createNewTodo = body => {
     ReactGA.event({
       category: "User",
-      action: "Created a todo",
+      action: "Created a todo"
     });
     const newTodo = {
       body: body,
@@ -217,7 +218,7 @@ function App() {
     ReactGA.event({
       value: id,
       category: "User",
-      action: "Edited a todo",
+      action: "Edited a todo"
     });
 
     saveToFireStore(id);
@@ -233,7 +234,7 @@ function App() {
       const newTodo = todos.find(todo => todo.id === id);
       db.doc(id).set(newTodo);
     } else {
-      const newTodo = id
+      const newTodo = id;
       db.doc().set(newTodo);
     }
   };
@@ -251,7 +252,7 @@ function App() {
     ReactGA.event({
       value: id,
       category: "User",
-      action: "Edited a todo",
+      action: "Edited a todo"
     });
     saveToFireStore(id);
   };
@@ -268,7 +269,7 @@ function App() {
     ReactGA.event({
       value: id,
       category: "User",
-      action: "Deleted a todo",
+      action: "Deleted a todo"
     });
     db.doc(id)
       .delete()
@@ -277,7 +278,7 @@ function App() {
         console.error("Error removing document: ", error);
         ReactGA.exception({
           fatal: true,
-          description: 'An error ocurred deleting a'
+          description: "An error ocurred deleting a"
         });
       });
   };

@@ -17,8 +17,10 @@ const SignInForm = props => (
         props.setPassword(e.target.value);
       }}
     />
-    <button className="Btn Btn-Signin" onClick={props.onSignIn}>Signin</button>
+    <button className="Btn Btn-Signin" onClick={props.onSignIn}>
+      Signin
+    </button>
   </div>
 );
 
-export default SignInForm
+export default SignInForm;
