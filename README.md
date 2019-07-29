@@ -1,4 +1,5 @@
-# React.js front end for the [Worlds Greatest Todo App](https://worldsgreatesttodoapp.com/)
+# [Worlds Greatest Todo 📋💻📱 App](https://worldsgreatesttodoapp.com/)
+Open source project working on building the best todo app ever.
 
 ![Intro](./intro.gif)
 
@@ -24,4 +25,4 @@ REACT_APP_DATABASE_URL="https://todo-something.firebaseio.com"
 
 ## Todo
 
-[ ] Write a good README.md
+* [ ] Write a good README.md
