@@ -37,6 +37,7 @@ firebase.initializeApp(firebaseConfig);
 
 function App() {
   const [filter, setFilter] = useState(null);
+  const [hitCount, setHitCount] = useState(null);
   const [loading, setLoading] = useState(true);
   const [todos, setTodos] = useState([]);
   const [newTodoBody, setNewTodoItem] = useState("");
@@ -64,12 +65,12 @@ function App() {
 
   const getHits = async () => {
     fetch("https://us-central1-todo-1d064.cloudfunctions.net/hitCounter")
-    // fetch("https://todo-1d064.firebaseio.com/hit_counter")
+    fetch("https://todo-1d064.firebaseio.com/hit_counter")
     
     let ref = firebase.database().ref('/');
     ref.on('value', snapshot => {
-    const state = snapshot.val();
-    console.log('state', state)
+    const newHitCount = snapshot.val();
+    setHitCount(newHitCount.hit_counter + 1)
     })
   }
 
@@ -320,7 +321,7 @@ function App() {
         onToggleTodo={onToggleTodo}
         onDeleteTodo={id => onDeleteTodo(id)}
       />
-      <Footer />
+      <Footer hitCount={hitCount} />
     </div>
   );
 }

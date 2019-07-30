@@ -1,36 +1,36 @@
 import React from "react";
-var style = {
+const style = {
   left: "0",
   bottom: "0",
   width: "100%",
   height: "2rem",
   color: "white",
-  padding: "20px",
-  position: "fixed",
-  textAlign: "center",
-  backgroundColor: "#12355B",
+  padding: "10px",
   display: "flex",
+  position: "fixed",
   alignItems: "center",
-  justifyContent: "center"
+  backgroundColor: "#12355B",
+  justifyContent: "space-around",
 };
 
-var phantom = {
+const phantom = {
   width: "100%",
   height: "60px",
   padding: "20px",
   display: "block"
 };
 
-const Footer = ({ children }) => {
+const Footer = ({ hitCount }) => {
   return (
     <div>
       <div style={phantom} />
       <div style={style}>
-        <h4>
+        <h6>
           <a href="https://github.com/PrimeTimeTran/Worlds-greatest-todo-app">
             World's Greatest Todo List
           </a>
-        </h4>
+        </h6>
+        <h6>Hits: {hitCount || "Loading"}</h6>
       </div>
     </div>
   );
