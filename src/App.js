@@ -40,7 +40,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [todos, setTodos] = useState([]);
   const [newTodoBody, setNewTodoItem] = useState("");
-  const [allTodoItems, setAllTodoItems] = useState([]);
+  const [allTodos, setAllTodos] = useState([]);
   const ref = useRef(firebase.firestore().collection("todos"));
   const [currentUser, setCurrentUser] = useState({ uid: "", email: "" });
   let userRef = useRef(currentUser);
@@ -62,7 +62,19 @@ function App() {
     save(todos);
   };
 
+  const getHits = async () => {
+    fetch("https://us-central1-todo-1d064.cloudfunctions.net/hitCounter")
+    // fetch("https://todo-1d064.firebaseio.com/hit_counter")
+    
+    let ref = firebase.database().ref('/');
+    ref.on('value', snapshot => {
+    const state = snapshot.val();
+    console.log('state', state)
+    })
+  }
+
   const setupApp = () => {
+    getHits()
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
         setCurrentUser({
@@ -106,7 +118,7 @@ function App() {
       return new Date(a.createdAt) - new Date(b.createdAt);
     });
     setTodos(todos);
-    setAllTodoItems(todos);
+    setAllTodos(todos);
   };
 
   const onSignIn = (email, password) => {
@@ -227,7 +239,6 @@ function App() {
   const saveToFireStore = id => {
     const db = firebase.firestore().collection("todos");
 
-    let jsonTodo;
     const isUpdatingTodo = typeof id === "string";
 
     if (isUpdatingTodo) {
@@ -259,8 +270,8 @@ function App() {
 
   const setNewFilter = type => {
     setFilter(type);
-    if (type === null) return setTodos(allTodoItems);
-    const todos = allTodoItems.filter(todo => todo.status === type);
+    if (type === null) return setTodos(allTodos);
+    const todos = allTodos.filter(todo => todo.status === type);
     setTodos(todos);
   };
 
@@ -298,7 +309,7 @@ function App() {
       />
       <SortingOptions
         filter={filter}
-        allTodoItems={allTodoItems}
+        allTodos={allTodos}
         setNewFilter={setNewFilter}
       />
       <TodoList

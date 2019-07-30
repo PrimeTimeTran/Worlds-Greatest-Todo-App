@@ -2,7 +2,7 @@ import React from "react";
 
 const TodoInput = ({ keyPress, newTodoBody, currentUser, setNewTodoItem }) => {
   return (
-    <div class="input-container">
+    <div className="input-container">
       <h1 className="Prompt prompt-title">Todo List</h1>
       <input
         autoFocus

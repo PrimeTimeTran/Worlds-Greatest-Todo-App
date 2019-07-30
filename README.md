@@ -1,7 +1,12 @@
 # [Worlds Greatest Todo 📋💻📱 App](https://worldsgreatesttodoapp.com/)
+
 Open source project working on building the best todo app ever.
 
 ![Intro](./intro.gif)
+
+## Dependencies
+
+* [React <sup>16.8.6</sup>](https://5bcf5863c6aed64970d6de5b--reactjs.netlify.com/)
 
 ## Setup
 
@@ -22,6 +27,10 @@ REACT_APP_APP_ID="1:something:web:something"
 REACT_APP_AUTH_DOMAIN="something.firebaseapp.com"
 REACT_APP_DATABASE_URL="https://todo-something.firebaseio.com"
 ```
+
+## Motivation
+
+Building this project openly with the world's community of developers working together could be an educational experience for all involved.
 
 ## Todo
 
