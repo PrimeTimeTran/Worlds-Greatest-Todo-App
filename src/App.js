@@ -12,6 +12,7 @@ import TodoInput from "./components/TodoInput";
 import SortingOptions from "./components/SortingOptions";
 
 import { randomBackgroundImage } from "./utils";
+import { messaging } from "./utils/init-fcm";
 
 import "./App.css";
 
@@ -23,17 +24,63 @@ ReactGA.event({
 
 ReactGA.ga("send", "pageview", "/");
 
-const firebaseConfig = {
-  storageBucket: "",
-  appId: process.env.REACT_APP_APP_ID,
-  apiKey: process.env.REACT_APP_API_KEY,
-  projectId: process.env.REACT_APP_PROJECT_ID,
-  authDomain: process.env.REACT_APP_AUTH_DOMAIN,
-  databaseURL: process.env.REACT_APP_DATABASE_URL,
-  messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID
-};
+messaging.requestPermission()
+    .then(async () => {
+      const token = await messaging.getToken();
+      console.log('messaging.requestPermission()', token)
+    })
+    .catch((err) => {
+      console.log("Unable to get permission to notify.", err);
+    });
+  navigator.serviceWorker.addEventListener("message", (message) => console.log(message));
 
-firebase.initializeApp(firebaseConfig);
+Notification.requestPermission().then((permission) => {
+  if (permission === 'granted') {
+    console.log('Notification permission granted.');
+    // TODO(developer): Retrieve an Instance ID token for use with FCM.
+    // ...
+  } else {
+    console.log('Unable to get permission to notify.');
+  }
+});
+
+// Get Instance ID token. Initially this makes a network call, once retrieved
+// subsequent calls to getToken will return from cache.
+messaging.getToken().then((currentToken) => {
+  if (currentToken) {
+    console.log('redred', currentToken)
+    // sendTokenToServer(currentToken);
+    // updateUIForPushEnabled(currentToken);
+  } else {
+    // Show permission request.
+    console.log('No Instance ID token available. Request permission to generate one.');
+    // Show permission UI.
+    // updateUIForPushPermissionRequired();
+    // setTokenSentToServer(false);
+  }
+}).catch((err) => {
+  console.log('An error occurred while retrieving token. ', err);
+  // showToken('Error retrieving Instance ID token. ', err);
+  // setTokenSentToServer(false);
+})
+
+// Callback fired if Instance ID token is updated.
+messaging.onTokenRefresh(() => {
+  messaging.getToken().then((refreshedToken) => {
+    console.log('Token refreshed.', refreshedToken);
+    // Indicate that the new Instance ID token has not yet been sent to the
+    // app server.
+    // setTokenSentToServer(false);
+    // Send Instance ID token to app server.
+    // sendTokenToServer(refreshedToken);
+    // ...
+  }).catch((err) => {
+    console.log('Unable to retrieve refreshed token ', err);
+    // showToken('Unable to retrieve refreshed token ', err);
+  });
+});
+
+messaging.onMessage((payload) => console.log('Message received. ', payload));
 
 function App() {
   const [filter, setFilter] = useState(null);
@@ -333,3 +380,6 @@ const Routes = () => (
 );
 
 export default Routes;
+
+
+
