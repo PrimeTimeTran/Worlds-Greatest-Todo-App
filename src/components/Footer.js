@@ -30,7 +30,7 @@ const Footer = ({ hitCount }) => {
             World's Greatest Todo List
           </a>
         </h6>
-        <h6>Hits: {hitCount || "Loading"}</h6>
+        <h6>Hitcount: {hitCount || "Loading"}</h6>
       </div>
     </div>
   );
