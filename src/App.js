@@ -24,47 +24,6 @@ ReactGA.event({
 
 ReactGA.ga("send", "pageview", "/");
 
-messaging.requestPermission()
-    .then(async () => {
-      const token = await messaging.getToken();
-      console.log('messaging.requestPermission()', token)
-    })
-    .catch((err) => {
-      console.log("Unable to get permission to notify.", err);
-    });
-  navigator.serviceWorker.addEventListener("message", (message) => console.log(message));
-
-Notification.requestPermission().then((permission) => {
-  if (permission === 'granted') {
-    console.log('Notification permission granted.');
-    // TODO(developer): Retrieve an Instance ID token for use with FCM.
-    // ...
-  } else {
-    console.log('Unable to get permission to notify.');
-  }
-});
-
-// Get Instance ID token. Initially this makes a network call, once retrieved
-// subsequent calls to getToken will return from cache.
-messaging.getToken().then((currentToken) => {
-  if (currentToken) {
-    console.log('redred', currentToken)
-    // sendTokenToServer(currentToken);
-    // updateUIForPushEnabled(currentToken);
-  } else {
-    // Show permission request.
-    console.log('No Instance ID token available. Request permission to generate one.');
-    // Show permission UI.
-    // updateUIForPushPermissionRequired();
-    // setTokenSentToServer(false);
-  }
-}).catch((err) => {
-  console.log('An error occurred while retrieving token. ', err);
-  // showToken('Error retrieving Instance ID token. ', err);
-  // setTokenSentToServer(false);
-})
-
-// Callback fired if Instance ID token is updated.
 messaging.onTokenRefresh(() => {
   messaging.getToken().then((refreshedToken) => {
     console.log('Token refreshed.', refreshedToken);
@@ -111,9 +70,6 @@ function App() {
   };
 
   const getHits = async () => {
-    fetch("https://us-central1-todo-1d064.cloudfunctions.net/hitCounter")
-    fetch("https://todo-1d064.firebaseio.com/hit_counter")
-    
     let ref = firebase.database().ref('/');
     ref.on('value', snapshot => {
     const newHitCount = snapshot.val();
