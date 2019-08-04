@@ -1,10 +1,10 @@
 import React from "react";
 
 const SignInForm = props => (
-  <div className="SignInFormNavigation">
+  <div className="signin-form-nav">
     <input
       value={props.email}
-      className="NavigationInput"
+      className="navigation-input"
       onChange={e => {
         props.setEmail(e.target.value);
       }}
@@ -12,12 +12,12 @@ const SignInForm = props => (
     <input
       type="password"
       value={props.password}
-      className="NavigationInput"
+      className="navigation-input"
       onChange={e => {
         props.setPassword(e.target.value);
       }}
     />
-    <button className="Btn Btn-Signin" onClick={props.onSignIn}>
+    <button className="Btn btn-signin" onClick={props.onSignIn}>
       Signin
     </button>
   </div>

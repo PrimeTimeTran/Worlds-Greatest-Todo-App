@@ -26,6 +26,8 @@ REACT_APP_MESSAGING_SENDER_ID="something"
 REACT_APP_APP_ID="1:something:web:something"
 REACT_APP_AUTH_DOMAIN="something.firebaseapp.com"
 REACT_APP_DATABASE_URL="https://todo-something.firebaseio.com"
+REACT_APP_GA_ID="UA-something-1"
+REACT_APP_USE_PUBLIC_V_API_KEY="something-soMeTHIng-SOmeThing"
 ```
 
 ## Motivation

@@ -9,9 +9,9 @@ const Navbar = ({ onSignIn, onSignOut, currentUser }) => {
   const [password, setPassword] = useState("");
 
   return (
-    <div className="Navbar">
+    <div className="nav-bar">
       {currentUser.uid !== "" ? (
-        <button className="Btn Btn-Signout" onClick={onSignOut}>
+        <button className="Btn btn-signout" onClick={onSignOut}>
           <FaSignOutAlt style={{ marginRight: 10 }} />
           Sign Out
         </button>

@@ -27,10 +27,10 @@ const Footer = ({ hitCount }) => {
       <div style={style}>
         <h6>
           <a href="https://github.com/PrimeTimeTran/Worlds-greatest-todo-app">
-            World's Greatest Todo List
+            Contribute
           </a>
         </h6>
-        <h6>Hitcount: {hitCount || "Loading"}</h6>
+        <h6>Hit Count: {hitCount || "Loading"}</h6>
       </div>
     </div>
   );
