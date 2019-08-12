@@ -13,14 +13,15 @@ const TodoList = ({
   submitEditTodo
 }) => {
   return (
-    <div className="TodoContainer">
-      {loading && <div className="loader" />}
-      <TodoPrompt todoList={todos} currentUser={currentUser} />
       <CSSTransitionGroup
         transitionName="example"
         transitionEnterTimeout={500}
         transitionLeaveTimeout={300}
+        className="TodoContainer"
       >
+      {loading && <div className="loader" />}
+      <TodoPrompt todoList={todos} currentUser={currentUser} />
+      
         {todos.map((todo, idx) => {
           return (
             <TodoItem
@@ -35,7 +36,6 @@ const TodoList = ({
           );
         })}
       </CSSTransitionGroup>
-    </div>
   );
 };
 
