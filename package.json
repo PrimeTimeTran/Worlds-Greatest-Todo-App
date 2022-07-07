@@ -5,7 +5,7 @@
   "dependencies": {
     "@fortawesome/react-fontawesome": "^0.1.4",
     "firebase": "^6.2.4",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "react": "^16.8.6",
     "react-dnd": "^9.3.2",
     "react-dnd-html5-backend": "^9.3.2",
